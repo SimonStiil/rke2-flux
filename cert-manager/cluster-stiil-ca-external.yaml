@@ -1,0 +1,29 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: cluster-stiil-ca
+  namespace: cert-manager
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: webhook-backend
+    kind: ClusterSecretStore
+  target:
+    name: cluster-stiil-ca
+    template:
+      type: kubernetes.io/tls
+      data:
+        tls.crt: "{{ .crt | toString }}"
+        tls.key: "{{ .key | toString }}"
+        ca.crt: "{{ .ca | toString }}"
+  data:
+  - secretKey: crt
+    remoteRef:
+      key: cluster-stiil-crt
+  - secretKey: key
+    remoteRef:
+      key: cluster-stiil-key
+  - secretKey: ca
+    remoteRef:
+      key: stiil-crt
+      

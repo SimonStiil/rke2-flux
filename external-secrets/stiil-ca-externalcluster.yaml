@@ -1,0 +1,24 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterExternalSecret
+metadata:
+  name: cluster-stiil-ca
+spec:
+  namespaceSelector:
+    matchLabels:
+      simonstiil/ca-secret-enabled: "true"
+  refreshTime: 12h
+  externalSecretSpec:
+    secretStoreRef:
+      name: webhook-backend
+      kind: ClusterSecretStore
+    refreshInterval: 12h
+    target:
+      name: stiil-ca-certificates
+      template:
+        type: Opaque
+        data:
+          ca.crt: "{{ .ca | toString }}"
+    data:
+      - secretKey: ca
+        remoteRef:
+          key: stiil-crt

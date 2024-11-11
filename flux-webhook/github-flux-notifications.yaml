@@ -1,0 +1,46 @@
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Provider
+metadata:
+  name: github-status
+  namespace: flux-system
+spec:
+  type: github
+  address: https://github.com/SimonStiil/turingpi-flux 
+  secretRef:
+    name: github-flux-notifications-token
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Alert
+metadata:
+  name: github-status
+  namespace: flux-system
+spec:
+  providerRef:
+    name: github-status
+  eventSources:
+    - kind: Kustomization
+      name: flux-system
+    - kind: Kustomization
+      name: external-secrets-pre
+    - kind: Kustomization
+      name: external-secrets-post
+    - kind: Kustomization
+      name: csi-driver-nfs
+    - kind: Kustomization
+      name: flux-webhook
+    - kind: Kustomization
+      name: cert-manager-pre
+    - kind: Kustomization
+      name: cert-manager-post
+    - kind: Kustomization
+      name: traefik-pre
+    - kind: Kustomization
+      name: traefik-chart
+    - kind: Kustomization
+      name: traefik-post
+    - kind: Kustomization
+      name: traefik-out-of-cluster
+    - kind: Kustomization
+      name: jenkins
+    - kind: Kustomization
+      name: portainer
