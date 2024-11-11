@@ -1,0 +1,122 @@
+apiVersion: beat.k8s.elastic.co/v1beta1
+kind: Beat
+metadata:
+  name: filebeat-container
+  namespace: elastic-eck
+spec:
+  type: filebeat
+  version: 8.16.0
+  elasticsearchRef:
+    name: elasticsearch
+  kibanaRef:
+    name: kibana
+  config:
+    filebeat.inputs:
+    - type: container
+      paths:
+      - /var/log/containers/*.log
+      processors:
+      - add_kubernetes_metadata:
+          host: $${NODE_NAME}
+          matchers:
+          - logs_path:
+              logs_path: /var/log/containers/
+    - type: journald
+      id: systemd
+      seek: since
+      since: -24h
+    processors:
+    - add_host_metadata: {}
+    - decode_json_fields:
+        fields: ["message"]
+        process_array: false
+        max_depth: 4
+        target: "json"
+        overwrite_keys: false
+  daemonSet:
+    podTemplate:
+      spec:
+        serviceAccount: filebeat
+        automountServiceAccountToken: true
+        terminationGracePeriodSeconds: 30
+        dnsPolicy: ClusterFirstWithHostNet
+        hostNetwork: true # Allows to provide richer host metadata
+        containers:
+        - name: filebeat
+          securityContext:
+            runAsUser: 0
+            # If using Red Hat OpenShift uncomment this:
+            #privileged: true
+          env:
+          - name: NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          volumeMounts:
+          - name: varlogcontainers
+            mountPath: /var/log/containers
+            readOnly: true
+          - name: varlogpods
+            mountPath: /var/log/pods
+            readOnly: true
+          - name: varlogjournal
+            mountPath: /var/log/journal
+            readOnly: true
+          - name: etcmachineid
+            mountPath: /etc/machine-id
+            readOnly: true
+          - name: runsystemd
+            mountPath: /run/systemd
+            readOnly: true
+        volumes:
+        - name: varlogcontainers
+          hostPath:
+            path: /var/log/containers
+        - name: varlogpods
+          hostPath:
+            path: /var/log/pods
+        - name: varlogjournal
+          hostPath:
+            path: /var/log/journal
+        - name: etcmachineid
+          hostPath:
+            path: /etc/machine-id
+        - name: runsystemd
+          hostPath:
+            path: /run/systemd
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: filebeat
+  namespace: elastic-eck
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: filebeat
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: filebeat
+subjects:
+- kind: ServiceAccount
+  name: filebeat
+  namespace: elastic-eck
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: filebeat
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  - namespaces
+  - events
+  - pods
+  verbs:
+  - get
+  - list
+  - watch

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitconfig
+  namespace: jenkins
+data:
+  .gitconfig: |
+    [user]
+            email = 130985998+SimonStiil@users.noreply.github.com
+            name = simon
+    [http]
+            proxy = http://squid-service.jenkins-squid.svc.cluster.local:3128
+            sslverify = false

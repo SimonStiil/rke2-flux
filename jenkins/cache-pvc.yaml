@@ -1,0 +1,27 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: golang-cache
+  namespace: jenkins
+spec:
+  storageClassName: rook-cephfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: golang-prgs
+  namespace: jenkins
+spec:
+  storageClassName: rook-cephfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+---

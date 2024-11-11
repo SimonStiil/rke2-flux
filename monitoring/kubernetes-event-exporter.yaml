@@ -1,0 +1,100 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: monitoring
+  name: event-exporter
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: event-exporter
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: event-exporter
+subjects:
+  - kind: ServiceAccount
+    namespace: monitoring
+    name: event-exporter
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: event-exporter
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["get", "watch", "list"]
+- apiGroups: ["coordination.k8s.io"]
+  resources: ["leases"]
+  verbs: ["*"]
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: event-exporter-cfg
+  namespace: monitoring
+data:
+  config.yaml: |
+    logLevel: warn
+    logFormat: json
+    metricsNamePrefix: event_exporter_
+    route:
+      routes:
+        - match:
+            - receiver: "loki"
+    receivers:
+      - name: "dump"
+        stdout:
+          deDot: true
+      - name: "loki"
+        loki:
+          streamLabels:
+            app: kubernetes-event
+          url: http://loki-write:3100/loki/api/v1/push
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-exporter
+  namespace: monitoring
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: event-exporter
+        version: v1
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '2112'
+        prometheus.io/path: '/metrics'
+    spec:
+      serviceAccountName: event-exporter
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: event-exporter
+          # The good practice would be to pin the version. This is just a reference so that we don't
+          # have to update this file in each release.
+          image: ghcr.io/resmoio/kubernetes-event-exporter:v1.7
+          imagePullPolicy: IfNotPresent
+          args:
+            - -conf=/data/config.yaml
+          volumeMounts:
+            - mountPath: /data
+              name: cfg
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+      volumes:
+        - name: cfg
+          configMap:
+            name: event-exporter-cfg
+  selector:
+    matchLabels:
+      app: event-exporter
+      version: v1

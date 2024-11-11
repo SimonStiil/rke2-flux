@@ -1,0 +1,21 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: test
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  timeout: 5m
+  path: ./test
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  postBuild:
+    substitute:
+      var_substitution_enabled: "true"
+    substituteFrom:
+      - kind: Secret
+        name: clusterconfig
+        optional: true

@@ -1,0 +1,27 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: jenkins-squid
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  timeout: 5m
+  path: ./jenkins-squid
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+  - apiVersion: apps/v1
+    kind: Deployment
+    name: squid-deployment
+    namespace: jenkins-squid
+  - apiVersion: v1
+    kind: Service
+    name: squid-service
+    namespace: jenkins-squid
+  - apiVersion: v1
+    kind: ConfigMap
+    name: squid-config
+    namespace: jenkins-squid

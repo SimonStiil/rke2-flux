@@ -1,0 +1,25 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: jenkins-webhook-k8s-cleanup
+  namespace: jenkins
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: webhook-backend
+    kind: ClusterSecretStore
+  target:
+    name: jenkins-webhook-k8s-cleanup
+    template:
+      metadata:
+        labels:
+          "jenkins.io/credentials-type": "secretText"
+          "jenkins.io/credentials-scope": "global"
+        annotations:
+          "jenkins.io/credentials-description": "Generic Webhook k8s-cleanup Token"
+      data:
+        text: "{{ .password | toString }}"
+  data:
+  - secretKey: password
+    remoteRef:
+      key: jenkins-webhook-k8s-cleanup

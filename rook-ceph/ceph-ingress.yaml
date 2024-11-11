@@ -1,0 +1,24 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+#    nginx.org/ssl-services: “rook-ceph-mgr-dashboard"
+  name: rook-ceph-mgr-dashboard
+  namespace: rook-ceph
+  labels:
+    app: whoami
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: ceph.${clusterdomain:=undefined}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rook-ceph-mgr-dashboard
+            port:
+              number: 8443
