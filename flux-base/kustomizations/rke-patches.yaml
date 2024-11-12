@@ -17,4 +17,11 @@ spec:
     kind: HelmChartConfig
     name: rke2-ingress-nginx
     namespace: kube-system
+  postBuild:
+    substitute:
+      var_substitution_enabled: "true"
+    substituteFrom:
+      - kind: Secret
+        name: clusterconfig
+        optional: true
 ---

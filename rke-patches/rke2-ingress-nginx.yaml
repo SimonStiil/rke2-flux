@@ -6,11 +6,13 @@ metadata:
 spec:
   valuesContent: |-
     controller:
+      kind: Deployment
+      replicaCount: 2
       service:
         enabled: true
         loadBalancerIP: 192.168.1.11
         externalTrafficPolicy: Local
       ingressClassResource:
         default: true
-#      extraArgs:
-#        default-ssl-certificate: 
+      extraArgs:
+        default-ssl-certificate: kube-system/nginx-default-certificate
