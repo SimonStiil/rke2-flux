@@ -1,0 +1,17 @@
+apiVersion: v1
+data:
+  ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIBdzCCAR2gAwIBAgIUJAxWt9A8FCvBnKalScXfhYKuhxgwCgYIKoZIzj0EAwIw
+    EDEOMAwGA1UECgwFc3RpaWwwIBcNMjQwMTE1MTAxMjMyWhgPMjA1NDAxMTQxMDEy
+    MzJaMBAxDjAMBgNVBAoMBXN0aWlsMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE
+    iTe/XL3RmJyaNJjqTo4c12TiF5fKoYFqazb7XeEb0AT8LCf1DFZQYdq21e3yr7oA
+    k2vNEj3w4KzsspQchoAYwaNTMFEwHQYDVR0OBBYEFDb9EJheXvOP9M44yBOgZd+T
+    0vvHMB8GA1UdIwQYMBaAFDb9EJheXvOP9M44yBOgZd+T0vvHMA8GA1UdEwEB/wQF
+    MAMBAf8wCgYIKoZIzj0EAwIDSAAwRQIgXoixJpm4aHfhfB2GTUQOVcFNMZTSPg91
+    miBP0DpPUMYCIQD6XD5Ey/LDSk6mzMOpujThl0H3VHclDj+JhqgWCBaZew==
+    -----END CERTIFICATE-----
+kind: ConfigMap
+metadata:
+  name: stiil-ca
+  namespace: jenkins

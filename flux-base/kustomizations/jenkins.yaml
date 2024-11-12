@@ -1,0 +1,41 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: jenkins
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  timeout: 5m
+  path: ./jenkins
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  dependsOn:
+    - name: crds-base
+    - name: crds-external-secrets
+  healthChecks:
+  - apiVersion: apps/v1
+    kind: StatefulSet
+    name: jenkins-jenkins
+    namespace: jenkins
+  - apiVersion: external-secrets.io/v1beta1
+    kind: ExternalSecret
+    name: ldap-secret
+    namespace: jenkins
+  - apiVersion: external-secrets.io/v1beta1
+    kind: ExternalSecret
+    name: ldap-secret
+    namespace: jenkins
+  - apiVersion: v1
+    kind: Secret
+    name: ldap-secret
+    namespace: jenkins
+  postBuild:
+    substitute:
+      var_substitution_enabled: "true"
+    substituteFrom:
+      - kind: Secret
+        name: clusterconfig
+        optional: true

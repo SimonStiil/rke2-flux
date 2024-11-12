@@ -10,3 +10,5 @@ resources:
 - reloader.yaml
 - rke-patches.yaml
 - rook-ceph.yaml
+- jenkins.yaml
+- jenkins-squid.yaml

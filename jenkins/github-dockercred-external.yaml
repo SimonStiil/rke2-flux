@@ -1,0 +1,23 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: github-dockercred
+  namespace: jenkins
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: webhook-backend
+    kind: ClusterSecretStore
+  target:
+    name: github-dockercred
+    template:
+      type: kubernetes.io/dockerconfigjson
+      data:
+        .dockerconfigjson: '{"auths":{"ghcr.io":{"username":"{{ .username }}","password":"{{ .passwordToken }}"}}}'
+  data:
+  - secretKey: username
+    remoteRef:
+      key: github-username
+  - secretKey: passwordToken
+    remoteRef:
+      key: github-password-token
