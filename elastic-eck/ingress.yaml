@@ -1,0 +1,42 @@
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: es-http
+  namespace: elastic-eck
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: elastic.${clusterdomain:=undefined}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service: 
+            name: elasticsearch-es-http
+            port: 
+              number: 9200
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: kb-http
+  namespace: elastic-eck
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: kibana.${clusterdomain:=undefined}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service: 
+            name: kibana-kb-http
+            port: 
+              number: 5601

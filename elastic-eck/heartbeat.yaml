@@ -1,0 +1,35 @@
+apiVersion: beat.k8s.elastic.co/v1beta1
+kind: Beat
+metadata:
+  name: heartbeat
+  namespace: elastic-eck
+spec:
+  type: heartbeat
+  version: 8.16.0
+  elasticsearchRef:
+    name: elasticsearch
+  config:
+    heartbeat.monitors:
+    - type: http
+      id: traefik.diskstation
+      name: Diskstation Traefik Dashboard
+      schedule: '@every 5s'
+      urls: ["https://traefik.diskstation.stiil.dk/dashboard/#/"]
+    - type: http
+      id: traefik.tpi
+      name: Turing PI Traefik Dashboard
+      schedule: '@every 5s'
+      urls: ["https://traefik.tpi.stiil.dk/dashboard/#/"]
+    - type: http
+      id: traefik.k3s
+      name: K3S Traefik Dashboard
+      schedule: '@every 5s'
+      urls: ["https://traefik.k3s.stiil.dk/dashboard/#/"]
+  deployment:
+    replicas: 1
+    podTemplate:
+      spec:
+        securityContext:
+          runAsUser: 0
+#https://www.elastic.co/guide/en/beats/heartbeat/current/monitor-http-options.html
+---

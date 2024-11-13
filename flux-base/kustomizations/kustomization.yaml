@@ -12,3 +12,5 @@ resources:
 - rook-ceph.yaml
 - jenkins.yaml
 - jenkins-squid.yaml
+- elastic-system.yaml
+- elastic-eck.yaml

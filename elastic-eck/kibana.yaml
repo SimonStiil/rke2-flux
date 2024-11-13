@@ -1,0 +1,18 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana
+  namespace: elastic-eck
+spec:
+  version: 8.16.0
+  count: 1
+  elasticsearchRef:
+    name: elasticsearch
+    namespace: elastic-eck
+  config:
+    server.publicBaseUrl: https://kibana.tpi.stiil.dk
+  http:
+    tls:
+      selfSignedCertificate:
+        subjectAltNames:
+        - dns: kibana.${clusterdomain:=undefined}

@@ -1,0 +1,31 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: elasticsearch
+  namespace: elastic-eck
+spec:
+  version: 8.16.0
+  volumeClaimDeletePolicy: DeleteOnScaledownOnly
+  secureSettings:
+  - secretName: object-bucket-claim-user
+  nodeSets:
+  - name: default
+    count: 3
+    config:
+      xpack.ml.enabled: true
+      node.store.allow_mmap: false
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Gi
+        storageClassName: ceph-nvme
+  http:
+    tls:
+      selfSignedCertificate:
+        subjectAltNames:
+        - dns: elastic.${clusterdomain:=undefined}
