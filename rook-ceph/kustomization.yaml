@@ -10,6 +10,7 @@ resources:
 - object-store.yaml
 - storageclass-nvme.yaml
 - storageclass-buckets.yaml
+- storageclass-rwx.yaml
 
 #- csi-metrics-service-monitor.yaml
 #- exporter-service-monitor.yaml

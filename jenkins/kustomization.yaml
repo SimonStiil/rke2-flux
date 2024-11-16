@@ -16,4 +16,4 @@ resources:
 - generic-webhook-token-external.yaml
 - generic-webhook-k8s-external.yaml
 - generic-webhook-repo-external.yaml
-- gitconfig-configmap.yaml
+- cache-pvc.yaml
