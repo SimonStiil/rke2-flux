@@ -9,4 +9,5 @@ data:
             email = 130985998+SimonStiil@users.noreply.github.com
             name = simon
     [http]
-            proxy = http://diskstation.${topleveldomain:=undefined}:3128
+            proxy = http://squid-service.jenkins-squid.svc.cluster.local:3128
+            sslverify = false

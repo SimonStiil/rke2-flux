@@ -1,0 +1,35 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned-issuer
+  namespace: jenkins-squid
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: mitm-cert
+  namespace: jenkins-squid
+spec:
+  secretName: mitm-cert
+  subject:
+    organizations:
+      - stiil
+    organizationalUnits:
+      - squid-mitm
+  commonName: squid-mitm.stiil.home
+  isCA: true
+  usages:
+    - server auth
+    - client auth
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS1
+    size: 256
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: selfsigned-issuer
+---

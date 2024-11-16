@@ -27,7 +27,9 @@ spec:
     spec:
       containers:
       - name: squid
-        image: ubuntu/squid:6.1-23.10_edge
+        image: ghcr.io/simonstiil/docker-squid:3.20.3
+        imagePullPolicy: Always
+        #ubuntu/squid:6.1-23.10_edge
         ports:
         - containerPort: 3128
           name: squid
@@ -36,6 +38,8 @@ spec:
         - name: squid-config-volume
           mountPath: /etc/squid/squid.conf
           subPath: squid.conf
+        - name: mitm-cert
+          mountPath: /etc/squid/ssl_cert/
         - name: squid-data
           mountPath: /var/spool/squid
       volumes:
@@ -48,4 +52,7 @@ spec:
         - name: squid-data
           emptyDir:
             sizeLimit: 500Mi
+        - name: mitm-cert
+          secret:
+            secretName: mitm-cert
 ## From https://git.launchpad.net/~ubuntu-docker-images/ubuntu-docker-images/+git/squid/plain/examples/squid-deployment.yml?h=6.1-23.10

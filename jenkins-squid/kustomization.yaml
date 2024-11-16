@@ -4,6 +4,7 @@ namespace: jenkins-squid
 resources:
 - namespace.yaml
 - squid-deployment.yaml
+- mitm-cert.yaml
 generatorOptions:
  disableNameSuffixHash: true
 configMapGenerator:
