@@ -1,0 +1,32 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "kubernetes": {
+    "fileMatch": ["\\.yaml$"]
+  },
+  "flux": {
+    "fileMatch": ["\\.yaml$"]
+  },
+  "lockFileMaintenance": {
+    "enabled": false
+  },
+  "packageRules": [
+    {
+      "groupName": "Fluxcd",
+      "groupSlug": "flux-cd",
+      "matchPackagePrefixes": ["ghcr.io/fluxcd"]
+    },
+    {
+      "groupName": "all dependencies",
+      "groupSlug": "all",
+      "excludePackagePrefixes": ["ghcr.io/fluxcd"],
+      "matchPackagePatterns": [
+        "*"
+      ]
+    }
+  ],
+  "separateMajorMinor": false
+  
+}
