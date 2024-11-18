@@ -14,3 +14,4 @@ resources:
 # - jenkins-squid.yaml
 - elastic-system.yaml
 - elastic-eck.yaml
+- test.yaml
