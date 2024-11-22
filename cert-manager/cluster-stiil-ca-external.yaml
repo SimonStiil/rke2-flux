@@ -20,10 +20,13 @@ spec:
   - secretKey: crt
     remoteRef:
       key: cluster-stiil-crt
+      property: certificates
   - secretKey: key
     remoteRef:
       key: cluster-stiil-key
+      property: certificates
   - secretKey: ca
     remoteRef:
       key: stiil-crt
+      property: certificates
       
