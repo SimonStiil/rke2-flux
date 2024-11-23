@@ -61,3 +61,13 @@ metadata:
 spec:
   interval: 1h
   url: https://helm.elastic.co
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: loft-sh
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://charts.loft.sh
+

@@ -15,3 +15,4 @@ resources:
 - elastic-system.yaml
 - elastic-eck.yaml
 - test.yaml
+- virt.yaml

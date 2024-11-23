@@ -16,3 +16,4 @@ spec:
         default: true
       extraArgs:
         default-ssl-certificate: kube-system/nginx-default-certificate
+        enable-ssl-passthrough: ""
