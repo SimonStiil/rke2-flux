@@ -14,17 +14,17 @@ spec:
       id: traefik.diskstation
       name: Diskstation Traefik Dashboard
       schedule: '@every 5s'
-      urls: ["https://traefik.diskstation.stiil.dk/dashboard/#/"]
+      urls: ["https://traefik.diskstation.${topleveldomain:=undefined}/dashboard/#/"]
     - type: http
       id: traefik.tpi
       name: Turing PI Traefik Dashboard
       schedule: '@every 5s'
-      urls: ["https://traefik.tpi.stiil.dk/dashboard/#/"]
+      urls: ["https://traefik.${clusterdomain:=undefined}/dashboard/#/"]
     - type: http
-      id: traefik.k3s
-      name: K3S Traefik Dashboard
+      id: jenkins.tpi
+      name: Jenkins
       schedule: '@every 5s'
-      urls: ["https://traefik.k3s.stiil.dk/dashboard/#/"]
+      urls: ["https://Jenkins.${clusterdomain:=undefined}/"]
   deployment:
     replicas: 1
     podTemplate:

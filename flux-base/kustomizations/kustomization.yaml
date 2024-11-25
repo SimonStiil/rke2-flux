@@ -17,3 +17,4 @@ resources:
 - test.yaml
 - virt.yaml
 - cloudnative-pg.yaml
+- monitoring.yaml

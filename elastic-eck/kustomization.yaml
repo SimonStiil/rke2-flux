@@ -11,6 +11,7 @@ resources:
 - metricbeat-all.yaml
 - metricbeat-controle.yaml
 - metricbeat-single.yaml
-
-
+- elastic-secret-sharing-ca-elasticsearch.yaml
+- elastic-secret-sharing-ca-kibana.yaml
+- elastic-secret-sharing-css.yaml
 # - heartbeat.yaml
