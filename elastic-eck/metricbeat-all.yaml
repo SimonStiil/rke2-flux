@@ -52,10 +52,12 @@ spec:
         period: 10s
         node: $${NODE_NAME}
         hosts:
-        - https://$${NODE_NAME}:10250
+        - https://localhost:10250
         bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-        ssl.certificate_authorities:
+        ssl:
+          certificate_authorities:
           - /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          verification_mode: "none"
         metricsets:
         - node
         - system
@@ -101,10 +103,14 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
+          securityContext:
+            capabilities:
+              add: ["CAP_SYS_ADMIN", "CAP_SYS_PTRACE"]
         dnsPolicy: ClusterFirstWithHostNet
         hostNetwork: true # Allows to provide richer host metadata
         securityContext:
           runAsUser: 0
+          allowPrivilegeEscalation: true
         terminationGracePeriodSeconds: 30
         volumes:
         - hostPath:
@@ -184,6 +190,15 @@ rules:
   - /metrics
   verbs:
   - get
+- apiGroups:
+    - metrics.k8s.io
+  resources:
+    - pods
+    - nodes
+  verbs:
+    - get
+    - list
+    - watch
 ---
 apiVersion: v1
 kind: ServiceAccount
