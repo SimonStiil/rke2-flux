@@ -11,9 +11,6 @@ resources:
 - rke-patches.yaml
 - rook-ceph.yaml
 - jenkins.yaml
-# - jenkins-squid.yaml
-- elastic-system.yaml
-- elastic-eck.yaml
 - test.yaml
 - virt.yaml
 - cloudnative-pg.yaml
