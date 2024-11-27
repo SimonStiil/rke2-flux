@@ -12,10 +12,19 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
+  dependsOn:
+    - name: flux-system-additions-rook
   postBuild:
     substitute:
       var_substitution_enabled: "true"
     substituteFrom:
       - kind: Secret
         name: clusterconfig
-        optional: true
+        optional: false
+      - kind: Secret
+        name: flux-loki-bucket
+        optional: false
+      - kind: Secret
+        name: flux-loki-bucket-name
+        optional: false
+---

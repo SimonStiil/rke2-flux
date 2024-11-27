@@ -1,0 +1,50 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: flux-system-additions-external-secrets
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  timeout: 5m
+  path: ./flux-system-additions/external-secrets
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  dependsOn:
+    - name: crds-external-secrets
+  healthChecks:
+  - apiVersion: external-secrets.io/v1beta1
+    kind: ExternalSecret
+    name: flux-loki-bucket-name
+    namespace: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: flux-system-additions-rook
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  timeout: 5m
+  path: ./flux-system-additions/rook
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  dependsOn:
+    - name: rook-ceph
+    - name: flux-system-additions-external-secrets
+  postBuild:
+    substitute:
+      var_substitution_enabled: "true"
+    substituteFrom:
+      - kind: Secret
+        name: flux-loki-bucket-name
+        optional: false
+  healthChecks:
+  - apiVersion: objectbucket.io/v1alpha1
+    kind: ObjectBucketClaim
+    name: flux-loki-bucket
+    namespace: flux-system

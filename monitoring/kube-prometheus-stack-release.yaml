@@ -1,0 +1,284 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: 62.3.1
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+  install:
+    crds: Skip
+  interval: 10m0s
+  targetNamespace: monitoring
+  valuesFrom:
+  - kind: ConfigMap
+    name: kube-prometheus-stack-values
+    valuesKey: kube-state-metrics-config.yaml
+  values:
+    fullnameOverride: prometheus
+    defaultRules:
+      create: true
+      rules:
+        alertmanager: true
+        etcd: true
+        configReloaders: true
+        general: true
+        k8s: true
+        kubeApiserverAvailability: true
+        kubeApiserverBurnrate: true
+        kubeApiserverHistogram: true
+        kubeApiserverSlos: true
+        kubelet: true
+        kubeProxy: true
+        kubePrometheusGeneral: true
+        kubePrometheusNodeRecording: true
+        kubernetesApps: true
+        kubernetesResources: true
+        kubernetesStorage: true
+        kubernetesSystem: true
+        kubeScheduler: true
+        kubeStateMetrics: true
+        network: true
+        node: true
+        nodeExporterAlerting: true
+        nodeExporterRecording: true
+        prometheus: true
+        prometheusOperator: true
+    alertmanager:
+      fullnameOverride: alertmanager
+      enabled: true
+      ingress:
+        enabled: false
+      serviceMonitor:
+        relabelings:
+          - targetLabel: "cluster"
+            replacement: "turingpi"
+    grafana:
+      enabled: true
+      fullnameOverride: grafana
+      forceDeployDatasources: false
+      forceDeployDashboards: false
+      defaultDashboardsEnabled: true
+      defaultDashboardsTimezone: utc
+      serviceMonitor:
+        enabled: true
+        relabelings:
+          - targetLabel: "cluster"
+            replacement: "turingpi"
+      admin:
+        existingSecret: grafana-admin-credentials
+        userKey: admin-user
+        passwordKey: admin-password
+      grafana.ini:
+        auth.ldap:
+          enabled: true
+          allow_sign_up: true
+          config_file: /etc/grafana/ldap.toml
+      ldap:
+        enabled: true
+        existingSecret: grafana-ldap-credentials
+      persistence:
+        enabled: true
+        type: pvc
+        storageClassName: "ceph-nvme"
+        accessModes:
+        - ReadWriteOnce
+        size: 4Gi
+      additionalDataSources:
+      - name: Loki
+        type: loki
+        uid: loki
+        access: proxy
+        url: http://loki-read:3100
+        version: 1
+        isDefault: false
+        editable: false
+        label: loki_datasource
+        labelValue: "1"
+        jsonData: {}
+    persistence:
+      enabled: true
+      type: sts
+      storageClassName: "ceph-nvme"
+      accessModes:
+        - ReadWriteOnce
+      size: 20Gi     
+    kubeApiServer:
+      enabled: true
+      serviceMonitor:
+        relabelings:
+          - targetLabel: "cluster"
+            replacement: "turingpi"
+    kubelet:
+      enabled: true
+      serviceMonitor:
+        relabelings:
+          - action: replace
+            sourceLabels: [__metrics_path__]
+            targetLabel: metrics_path
+          - action: replace
+            sourceLabels:
+              - node
+            targetLabel: instance
+          - targetLabel: "cluster"
+            replacement: "turingpi"
+        cAdvisorRelabelings:
+          - action: replace
+            sourceLabels: [__metrics_path__]
+            targetLabel: metrics_path
+          - targetLabel: "cluster"
+            replacement: "turingpi"
+        probesRelabelings:
+          - action: replace
+            sourceLabels: [__metrics_path__]
+            targetLabel: metrics_path
+          - targetLabel: "cluster"
+            replacement: "turingpi"
+        resourceRelabelings:
+          - action: replace
+            sourceLabels: [__metrics_path__]
+            targetLabel: metrics_path
+          - targetLabel: "cluster"
+            replacement: "turingpi"
+    kubeControllerManager:
+      enabled: true
+      endpoints: # ips of servers 
+        - 192.168.1.111
+        - 192.168.1.112
+        - 192.168.1.113
+      serviceMonitor:
+        relabelings:
+          - targetLabel: "cluster"
+            replacement: "turingpi"
+    coreDns:
+      enabled: true
+      serviceMonitor:
+        relabelings:
+          - targetLabel: "cluster"
+            replacement: "turingpi"
+    kubeDns:
+      enabled: false
+    kubeEtcd:
+      enabled: true
+      endpoints: # ips of servers
+        - 192.168.1.111
+        - 192.168.1.112
+        - 192.168.1.113
+      service:
+        enabled: true
+        port: 2381
+        targetPort: 2381
+      serviceMonitor:
+        relabelings:
+          - targetLabel: "cluster"
+            replacement: "turingpi"
+    kubeScheduler:
+      enabled: true
+      endpoints: # ips of servers
+        - 192.168.1.111
+        - 192.168.1.112
+        - 192.168.1.113
+      serviceMonitor:
+        relabelings:
+          - targetLabel: "cluster"
+            replacement: "turingpi"
+    kubeProxy:
+      enabled: true
+      endpoints: # ips of servers
+        - 192.168.1.111
+        - 192.168.1.112
+        - 192.168.1.113
+      serviceMonitor:
+        relabelings:
+          - targetLabel: "cluster"
+            replacement: "turingpi"
+    kubeStateMetrics:
+      enabled: true
+    kube-state-metrics:
+      fullnameOverride: kube-state-metrics
+      selfMonitor:
+        enabled: true
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels:
+                - __meta_kubernetes_pod_node_name
+              targetLabel: kubernetes_node
+            - targetLabel: "cluster"
+              replacement: "turingpi"
+    nodeExporter:
+      enabled: true
+      serviceMonitor:
+        relabelings:
+          - action: replace
+            regex: (.*)
+            replacement: $1
+            sourceLabels:
+              - __meta_kubernetes_pod_node_name
+            targetLabel: kubernetes_node
+          - targetLabel: "cluster"
+            replacement: "turingpi"
+    prometheus-node-exporter:
+      fullnameOverride: node-exporter
+      podLabels:
+        jobLabel: node-exporter
+      extraArgs:
+        - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
+        - --collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$
+      service:
+        portName: http-metrics
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels:
+                - __meta_kubernetes_pod_node_name
+              targetLabel: kubernetes_node
+            - targetLabel: "cluster"
+              replacement: "turingpi"
+    prometheusOperator:
+      enabled: true
+      serviceMonitor:
+        relabelings:
+          - targetLabel: "cluster"
+            replacement: "turingpi"
+    prometheus:
+      enabled: true
+      prometheusSpec:
+        replicas: 1
+        replicaExternalLabelName: "replica"
+        ruleSelectorNilUsesHelmValues: false
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        probeSelectorNilUsesHelmValues: false
+        retention: 48h
+        enableAdminAPI: true
+        walCompression: true
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: ceph-nvme
+              accessModes: ["ReadWriteOnce"]
+              resources:
+                requests:
+                  storage: 50Gi
+      serviceMonitor:
+        relabelings:
+          - targetLabel: "cluster"
+            replacement: "turingpi"
+    thanosRuler:
+      enabled: false
