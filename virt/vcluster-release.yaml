@@ -29,6 +29,47 @@ spec:
           enabled: true
         ingressClasses:
           enabled: true
+    experimental:
+      multiNamespaceMode:
+        enabled: true
+      genericSync:
+        role:
+          extraRules:
+            - apiGroups: ["objectbucket.io"]
+              resources: ["objectbucketclaims"]
+              verbs: ["create", "delete", "patch", "update", "get", "list", "watch"]
+            - apiGroups: ["cert-manager.io"]
+              resources: ["issuers", "certificates"]
+              verbs: ["create", "delete", "patch", "update", "get", "list", "watch"]
+        clusterRole:
+          extraRules:
+            - apiGroups: ["objectbucket.io"]
+              resources: ["objectbuckets"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["apiextensions.k8s.io"]
+              resources: ["customresourcedefinitions"]
+              verbs: ["get", "list", "watch"]
+        export:
+          - apiVersion: objectbucket.io/v1alpha1
+            kind: ObjectBucketClaim
+          - apiVersion: cert-manager.io/v1
+            kind: Issuer
+          - apiVersion: cert-manager.io/v1
+            kind: Certificate
+        import:
+          - apiVersion: objectbucket.io/v1alpha1
+            kind: ObjectBucketClaim
+          - apiVersion: objectbucket.io/v1alpha1
+            kind: ObjectBucket
+          - apiVersion: cert-manager.io/v1
+            kind: Certificate
+          - apiVersion: v1
+            kind: Secret
+    networking:
+      replicateServices:
+        fromHost:
+        - from: rook-ceph/rook-ceph-rgw-object-store
+          to: rook-ceph/rook-ceph-rgw-object-store
     controlPlane:
       backingStore:
         database:
