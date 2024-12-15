@@ -84,6 +84,12 @@ spec:
       ldap:
         enabled: true
         existingSecret: grafana-ldap-credentials
+      deploymentStrategy:
+        type: Recreate
+      ingress:
+        enabled: true
+        hosts:
+         - grafana.${clusterdomain:=undefined}
       persistence:
         enabled: true
         type: pvc
@@ -280,5 +286,9 @@ spec:
         relabelings:
           - targetLabel: "cluster"
             replacement: "turingpi"
+      ingress:
+        enabled: true
+        hosts:
+         - prometheus.${clusterdomain:=undefined}
     thanosRuler:
       enabled: false

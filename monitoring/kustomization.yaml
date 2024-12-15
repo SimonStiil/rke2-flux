@@ -5,8 +5,8 @@ resources:
 - grafana-admin-credentials-external.yaml
 - grafana-ldap-credentials-external.yaml
 - kube-prometheus-stack-release.yaml
-- prometheus-ingress.yaml
-- grafana-ingress.yaml
+# - prometheus-ingress.yaml
+# - grafana-ingress.yaml
 - loki-release.yaml
 - promtail-release.yaml
 - kubernetes-event-exporter.yaml

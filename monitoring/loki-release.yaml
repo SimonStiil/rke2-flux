@@ -90,7 +90,13 @@ spec:
       enabled: true
       ingressClassName: nginx
       hosts:
-        - loki.${clusterdomain:=undefined}
+        - loki.tpi.${homedomain:=undefined}
+      annotations:
+        cert-manager.io/cluster-issuer: stiil-issuer
+      tls:
+      - secretName: loki-cert
+        hosts:
+        - loki.tpi.${homedomain:=undefined}
     backend:
       replicas: 3        
     read:
