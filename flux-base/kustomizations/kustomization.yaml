@@ -12,7 +12,9 @@ resources:
 - rook-ceph.yaml
 - jenkins.yaml
 - test.yaml
-- virt.yaml
+# - virt.yaml
 - cloudnative-pg.yaml
 - flux-system-additions.yaml
 - monitoring.yaml
+- traefik-out-of-cluster.yaml
+- external-dns.yaml

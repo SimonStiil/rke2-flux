@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik-out-of-cluster
+  namespace: traefik-out-of-cluster
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik-out-of-cluster
+  template:
+    metadata:
+      labels:
+        app: traefik-out-of-cluster
+    spec:
+      containers:
+      - name: agent
+        image: ghcr.io/simonstiil/traefik-out-of-cluster:main
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: TOOC_CLUSTER_INGRESS_ADDRESS
+          value: ${clusterdomain:=undefined}
+        - name: TOOC_DEBUG
+          value: "true"
+      serviceAccountName: ro-ingress-services-routes
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-out-of-cluster
+  namespace: traefik-out-of-cluster
+spec:
+  selector:
+    app: traefik-out-of-cluster
+  ports:
+    - protocol: TCP
+      port: 8080
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: traefik-out-of-cluster
+  namespace: traefik-out-of-cluster
+  labels:
+    external-dns-export: "true"
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    cert-manager.io/cluster-issuer: stiil-issuer
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: tooc-k3s.${homedomain:=undefined}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: traefik-out-of-cluster
+            port:
+              number: 8080
+  tls:
+  - hosts:
+    - tooc-k3s.${homedomain:=undefined}
+    secretName: traefik-out-of-cluster

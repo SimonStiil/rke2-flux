@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: traefik-out-of-cluster
+  labels:
+    simonstiil/ca-secret-enabled: "true"
