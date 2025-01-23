@@ -18,29 +18,47 @@ spec:
   providerRef:
     name: github-status
   eventSources:
-    - kind: Kustomization
-      name: flux-system
-    - kind: Kustomization
-      name: external-secrets-pre
-    - kind: Kustomization
-      name: external-secrets-post
-    - kind: Kustomization
-      name: csi-driver-nfs
-    - kind: Kustomization
-      name: flux-webhook
-    - kind: Kustomization
-      name: cert-manager-pre
-    - kind: Kustomization
-      name: cert-manager-post
-    - kind: Kustomization
-      name: traefik-pre
-    - kind: Kustomization
-      name: traefik-chart
-    - kind: Kustomization
-      name: traefik-post
-    - kind: Kustomization
-      name: traefik-out-of-cluster
-    - kind: Kustomization
-      name: jenkins
-    - kind: Kustomization
-      name: portainer
+  - kind: Kustomization
+    name: cert-manager
+  - kind: Kustomization
+    name: cloudnative-pg
+  - kind: Kustomization
+    name: crds-base
+  - kind: Kustomization
+    name: crds-cert-manager
+  - kind: Kustomization
+    name: crds-external-secrets
+  - kind: Kustomization
+    name: crds-metallb
+  - kind: Kustomization
+    name: crds-rook
+  - kind: Kustomization
+    name: csi-driver-nfs
+  - kind: Kustomization
+    name: external-dns
+  - kind: Kustomization
+    name: external-secrets
+  - kind: Kustomization
+    name: flux-system
+  - kind: Kustomization
+    name: flux-system-additions-external-secrets
+  - kind: Kustomization
+    name: flux-system-additions-rook
+  - kind: Kustomization
+    name: flux-webhook
+  - kind: Kustomization
+    name: jenkins
+  - kind: Kustomization
+    name: metallb
+  - kind: Kustomization
+    name: monitoring
+  - kind: Kustomization
+    name: reloader
+  - kind: Kustomization
+    name: rke-patches
+  - kind: Kustomization
+    name: rook-ceph
+  - kind: Kustomization
+    name: test
+  - kind: Kustomization
+    name: traefik-out-of-cluster
