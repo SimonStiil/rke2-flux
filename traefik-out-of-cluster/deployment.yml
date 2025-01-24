@@ -64,5 +64,5 @@ spec:
               number: 8080
   tls:
   - hosts:
-    - tooc-k3s.${homedomain:=undefined}
+    - tooc-tpi.${homedomain:=undefined}
     secretName: traefik-out-of-cluster
