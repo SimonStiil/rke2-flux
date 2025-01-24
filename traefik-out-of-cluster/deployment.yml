@@ -52,7 +52,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: tooc-k3s.${homedomain:=undefined}
+  - host: tooc-tpi.${homedomain:=undefined}
     http:
       paths:
       - path: /
