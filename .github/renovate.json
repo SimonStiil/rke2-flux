@@ -12,6 +12,15 @@
   "lockFileMaintenance": {
     "enabled": false
   },
+  "regexManagers": [
+    {
+      "fileMatch": ["\\.yaml$"],
+      "matchStrings": [
+        "- https://raw.githubusercontent.com/(?<depName>[\\w\\-\\_]+/[\\w\\-\\_]+?)/(?<currentValue>[\\w\\-\\_\\,\\.]+?)/"
+      ],
+      "datasourceTemplate": "github-releases"
+    }
+  ],
   "packageRules": [
     {
       "groupName": "Fluxcd",
