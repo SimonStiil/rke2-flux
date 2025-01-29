@@ -140,6 +140,9 @@ spec:
         requests:
           cpu: 200m
           memory: 2048Mi
+      javaOpts: >-
+        -Dhudson.model.ParametersAction.safeParameters=jenkins-generic-webhook-trigger-plugin_uuid 
+        -Dorg.jenkinsci.plugins.durabletask.BourneShellScript.LAUNCH_DIAGNOSTICS=true
     persistence:
       storageClass: ceph-nvme
     rbac:
