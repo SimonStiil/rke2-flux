@@ -18,3 +18,4 @@ resources:
 - monitoring.yaml
 - traefik-out-of-cluster.yaml
 - external-dns.yaml
+- kube-auth-proxy.yaml

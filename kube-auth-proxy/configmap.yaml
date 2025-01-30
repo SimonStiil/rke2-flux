@@ -1,0 +1,15 @@
+apiVersion: v1
+data:
+  config.yaml: |-
+    Proxy:
+      Port: 8080
+    LDAP:
+      URL: ldaps://diskstation.${topleveldomain}:636
+      Group: developer
+      SearchGroupFilter: (&(cn=%s)(objectClass=posixGroup))
+      BaseDN: ${ldapclusterdomain}
+      BindDN: uid=svc-kube-auth,cn=users,${ldapclusterdomain}
+kind: ConfigMap
+metadata:
+  name: config
+  namespace: kube-auth-proxy
