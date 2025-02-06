@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: vcluster
-      version: 0.22.3
+      version: 0.22.4
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
