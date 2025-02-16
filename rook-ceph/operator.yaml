@@ -557,6 +557,8 @@ data:
   #       requests:
   #         cpu: 100m
   #         memory: 128Mi
+  # RevisionHistoryLimit value for all deployments created by rook.
+  ROOK_REVISION_HISTORY_LIMIT: "2"
 ---
 # OLM: BEGIN OPERATOR DEPLOYMENT
 apiVersion: apps/v1
@@ -571,6 +573,8 @@ metadata:
     app.kubernetes.io/instance: rook-ceph
     app.kubernetes.io/component: rook-ceph-operator
     app.kubernetes.io/part-of: rook-ceph-operator
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   selector:
     matchLabels:
@@ -578,6 +582,7 @@ spec:
   strategy:
     type: Recreate
   replicas: 1
+  revisionHistoryLimit: 2
   template:
     metadata:
       labels:

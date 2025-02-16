@@ -79,6 +79,7 @@ spec:
         delete_request_store: s3
       limits_config:
         retention_period: 168h
+      revisionHistoryLimit: 2
     deploymentMode: SimpleScalable
     chunksCache:
       # default is 500MB, with limited memory keep this smaller

@@ -62,6 +62,7 @@ spec:
             replacement: "turingpi"
     grafana:
       enabled: true
+      revisionHistoryLimit: 2
       fullnameOverride: grafana
       forceDeployDatasources: false
       forceDeployDashboards: false
@@ -223,6 +224,7 @@ spec:
               targetLabel: kubernetes_node
             - targetLabel: "cluster"
               replacement: "turingpi"
+      revisionHistoryLimit: 2
     nodeExporter:
       enabled: true
       serviceMonitor:
@@ -262,6 +264,7 @@ spec:
         relabelings:
           - targetLabel: "cluster"
             replacement: "turingpi"
+      revisionHistoryLimit: 2
     prometheus:
       enabled: true
       prometheusSpec:
