@@ -73,12 +73,13 @@ spec:
     # The url of the Prometheus instance
     # prometheusEndpoint: <protocol>://<prometheus-host>:<port>
 #    prometheusEndpoint: https://prometheus.${clusterdomain:=undefined}:443
+    prometheusEndpoint: http://prometheus-prometheus.monitoring.svc.cluster.local:9090
     # Whether SSL should be verified if the Prometheus server is using https
-    # prometheusEndpointSSLVerify: false
+    prometheusEndpointSSLVerify: false
   # enable prometheus alerting for cluster
   monitoring:
     # requires Prometheus to be pre-installed
-    enabled: false ## Remove on new installation
+    enabled: true ## Remove on new installation
     # Whether to disable the metrics reported by Ceph. If false, the prometheus mgr module and Ceph exporter are enabled.
     # If true, the prometheus mgr module and Ceph exporter are both disabled. Default is false.
     metricsDisabled: false

@@ -14,3 +14,4 @@ spec:
     # for more info: https://docs.ceph.com/docs/master/rados/operations/placement-groups/#specifying-expected-pool-size
     #targetSizeRatio: .5
   deviceClass: nvme
+  enableRBDStats: true
