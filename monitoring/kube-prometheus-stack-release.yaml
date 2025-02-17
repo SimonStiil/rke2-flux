@@ -292,6 +292,12 @@ spec:
       ingress:
         enabled: true
         hosts:
-         - prometheus.${clusterdomain:=undefined}
+         - prometheus.tpi.${homedomain:=undefined}
+        annotations:
+          cert-manager.io/cluster-issuer: stiil-issuer
+        tls:
+        - secretName: prometheus-cert
+          hosts:
+          - prometheus.tpi.${homedomain:=undefined}
     thanosRuler:
       enabled: false
