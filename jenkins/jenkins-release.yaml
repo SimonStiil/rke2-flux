@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: jenkins
-      version: 5.8.17
+      version: 5.8.18
       reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
