@@ -19,3 +19,4 @@ resources:
 - traefik-out-of-cluster.yaml
 - external-dns.yaml
 - kube-auth-proxy.yaml
+- trivy-operator.yaml
