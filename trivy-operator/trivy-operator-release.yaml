@@ -19,4 +19,14 @@ spec:
   values:
     serviceMonitor:
       enabled: true
-    
+    trivy:
+      ignoreUnfixed: true
+      ignorePolicy:
+        jenkins: |
+          package trivy
+          import data.lib.trivy
+          default ignore = false
+          ignore_check_id := {"KSV053", "KSV048"}
+          ignore {
+            input.CweIDs == ignore_check_id[_]
+          }
