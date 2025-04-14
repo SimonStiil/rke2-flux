@@ -19,4 +19,5 @@ resources:
 - traefik-out-of-cluster.yaml
 - external-dns.yaml
 - kube-auth-proxy.yaml
+- mysql-operator.yaml
 # - trivy-operator.yaml
