@@ -16,6 +16,9 @@
       "\\.yaml$"
     ]
   },
+  "ignorePaths": [
+    "monitoring/loki-release.yaml"
+  ],
   "lockFileMaintenance": {
     "enabled": false
   },
