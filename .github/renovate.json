@@ -46,6 +46,11 @@
         "!ghcr.io/fluxcd{/,}**",
         "*"
       ]
+    },
+    {
+      "matchManagers": ["helm-values","kubernetes"],
+      "matchPaths": ["monitoring/loki-release.yaml"],
+      "enabled": false
     }
   ],
   "separateMajorMinor": false
