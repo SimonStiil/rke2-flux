@@ -27,16 +27,24 @@ spec:
     createNamespace: true
   values:
     env:
-      DB_HOSTNAME: "{{ .Release.Name }}-postgresql"
-      DB_USERNAME: "{{ .Values.postgresql.global.postgresql.auth.username }}"
-      DB_DATABASE_NAME: "{{ .Values.postgresql.global.postgresql.auth.database }}"
+      DB_HOSTNAME: "immich-postgres-rw"
+      DB_DATABASE_NAME: "immich"
+      DB_USERNAME:
+        secretKeyRef:
+          name: immich-postgres-user
+          key: username
+      DB_PASSWORD:
+        secretKeyRef:
+          name: immich-postgres-user
+          key: password
     immich:
       metrics:
         enabled: true
       persistence:
         library:
-          existingClaim:
-          
+          existingClaim: immich-library
+    redis:
+      enabled: true
     server:
       ingress:
         main:

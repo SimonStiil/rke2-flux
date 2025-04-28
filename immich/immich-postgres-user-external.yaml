@@ -1,0 +1,22 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: immich-postgres-user
+  namespace: immich
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: webhook-backend
+    kind: ClusterSecretStore
+  target:
+    name: immich-postgres-user
+    template:
+      type: kubernetes.io/basic-auth
+      data:
+        username: "immich"
+        password: "{{ .password | toString }}"
+  data:
+  - secretKey: password
+    remoteRef:
+      key: immich-postgres-user
+      property: turingpi
