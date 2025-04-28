@@ -21,3 +21,4 @@ resources:
 - kube-auth-proxy.yaml
 - mysql-operator.yaml
 # - trivy-operator.yaml
+- immich.yaml
