@@ -13,7 +13,7 @@ spec:
     kind: GitRepository
     name: flux-system
   dependsOn:
-    - name: crds-external-secrets
+    - name: external-secrets
   healthChecks:
   - apiVersion: external-secrets.io/v1beta1
     kind: ExternalSecret
