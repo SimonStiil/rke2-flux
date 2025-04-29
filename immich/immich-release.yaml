@@ -56,3 +56,28 @@ spec:
             - host: images.tpi.stiil.dk
               paths:
                 - path: "/"
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |-
+              - op: add
+                path: /spec/template/spec/volumes
+                value: 
+                  - name: dsphoto
+                    nfs:
+                      server: 192.168.1.5
+                      path: /volume2/photo
+                      readOnly: true
+                  - name: library
+                    persistentVolumeClaim:
+                      claimName: immich-library
+              - op: add
+                path: /spec/template/spec/containers/0/volumeMounts
+                value: 
+                  - name: dsphoto
+                    mountPath: /usr/src/app/dsphoto
+                  - name: library
+                    mountPath: /usr/src/app/upload
+            target:
+              kind: Deployment
+              labelSelector: "app.kubernetes.io/name=server"
