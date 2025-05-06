@@ -45,6 +45,14 @@ spec:
           existingClaim: immich-library
     redis:
       enabled: true
+      master:
+        extraFlags:
+          - "--maxmemory"
+          - "750mb"
+          - "--maxmemory-policy"
+          - "volatile-lru"
+#          - "allkeys-lru"
+        resourcesPreset: "small"
     server:
       ingress:
         main:
