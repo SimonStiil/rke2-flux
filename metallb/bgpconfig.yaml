@@ -1,0 +1,41 @@
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  creationTimestamp: null
+  name: unifi-peer
+  namespace: metallb-system
+spec:
+  holdTime: 1m30s
+  keepaliveTime: 0s
+  myASN: 65001
+  passwordSecret: {}
+  peerASN: 65000
+  peerAddress: 192.168.1.1
+status: {}
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: bgp-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.101.1-192.168.101.25
+---
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  creationTimestamp: null
+  name: unifi-bgp-advertisement
+  namespace: metallb-system
+spec:
+  aggregationLength: 32
+  localPref: 100
+  ipAddressPools:
+  - bgp-pool
+  peers:
+  - unifi-peer
+  communities:
+  - 65001:100
+status: {}
+---
