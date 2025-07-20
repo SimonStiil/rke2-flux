@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
 - rke2-ingress-nginx.yaml
 - default-cert.yaml
+- traefik.diskstation.yaml
