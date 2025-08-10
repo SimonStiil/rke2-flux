@@ -1,0 +1,26 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: linkding-superuser
+  namespace: linkding
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: webhook-backend
+    kind: ClusterSecretStore
+  target:
+    name: linkding-superuser
+    template:
+      type: kubernetes.io/basic-auth
+      data:
+        username: "{{ .username | toString }}"
+        password: "{{ .password | toString }}"
+  data:
+  - secretKey: username
+    remoteRef:
+      key: linkding-superuser-name
+      property: turingpi
+  - secretKey: password
+    remoteRef:
+      key: linkding-superuser
+      property: turingpi

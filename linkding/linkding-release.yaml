@@ -1,0 +1,54 @@
+---
+# https://charts.pascaliske.dev/charts/linkding/
+# https://github.com/sissbruecker/linkding/tree/master
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: linkding
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chart: linkding
+      version: 2.2.0
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: pascaliske
+  install:
+    createNamespace: true
+  interval: 10m0s
+  targetNamespace: linkding
+  values:
+    persistentVolumeClaim:
+      storageClassName: ceph-nvme
+      size: 50Mi
+    env:
+    # -- Timezone for the container.
+    - name: TZ
+      value: Europe/Copenhagen
+    - name: LD_SUPERUSER_NAME
+      valueFrom:
+        secretKeyRef:
+          name: linkding-superuser
+          key: username
+    - name: LD_SUPERUSER_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: linkding-superuser
+          key: password
+    - name: LD_DB_ENGINE
+      value: postgres
+    - name: LD_DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: linkding-postgres-user
+          key: username
+    - name: LD_DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: linkding-postgres-user
+          key: password
+    - name: LD_DB_HOST
+      value: linkding-postgres-rw
+      

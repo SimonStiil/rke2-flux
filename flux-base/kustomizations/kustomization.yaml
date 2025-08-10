@@ -22,3 +22,4 @@ resources:
 #- trivy-operator.yaml
 #- immich.yaml
 # - mysql-operator.yaml
+- linkding.yaml

@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: linkding
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: linkding
+  namespace: linkding
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "2m"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: linkding.${clusterdomain:=undefined}
+    http:
+      paths:
+      - backend:
+          service:
+            name: linkding-linkding
+            port:
+              number: 9090
+        path: /
+        pathType: Prefix

@@ -1,0 +1,46 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: linkding-postgres-user
+  namespace: linkding
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: webhook-backend
+    kind: ClusterSecretStore
+  target:
+    name: linkding-postgres-user
+    template:
+      type: kubernetes.io/basic-auth
+      data:
+        username: "linkding"
+        password: "{{ .password | toString }}"
+  data:
+  - secretKey: password
+    remoteRef:
+      key: linkding-postgres-user
+      property: turingpi
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: linkding-postgres
+  namespace: linkding
+spec:
+  instances: 1
+  managed:
+    roles:
+      - name: linkding
+        superuser: true
+        login: true
+
+  bootstrap:
+    initdb:
+      database: linkding
+      owner: linkding
+      secret:
+        name: linkding-postgres-user
+
+  storage:
+    size: 1Gi
+    storageClass: ceph-nvme
