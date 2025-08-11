@@ -22,7 +22,7 @@ spec:
   values:
     persistentVolumeClaim:
       storageClassName: ceph-nvme
-      size: 50Mi
+      size: 500Mi
     env:
     # -- Timezone for the container.
     - name: TZ
