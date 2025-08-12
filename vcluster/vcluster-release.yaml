@@ -1,0 +1,44 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vcluster
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chart: vcluster
+      version: 0.26.0
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: loft-sh
+  interval: 10m0s
+  targetNamespace: vcluster
+  install:
+    createNamespace: true
+  values:
+    sync:
+      toHost:
+        ingresses:
+          enabled: true
+        serviceAccounts:
+          enabled: true
+      fromHost:
+        storageClasses:
+          enabled: true
+        ingressClasses:
+          enabled: true
+    controlPlane:
+      backingStore:
+        database:
+          embedded:
+            enabled: true
+      proxy:
+        extraSANs: ["api.virt.${topleveldomain:=undefined}"]
+      ingress:
+        enabled: true
+        host: api.virt.${topleveldomain:=undefined}
+    exportKubeConfig:
+      context: virt-context
+      server: https://api.virt.${topleveldomain:=undefined}

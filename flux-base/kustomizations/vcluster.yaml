@@ -2,12 +2,12 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: virt
+  name: vcluster
   namespace: flux-system
 spec:
   interval: 10m0s
   timeout: 5m
-  path: ./virt
+  path: ./vcluster
   prune: true
   sourceRef:
     kind: GitRepository
