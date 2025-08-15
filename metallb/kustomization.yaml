@@ -4,3 +4,4 @@ resources:
 - namespace.yaml
 - metallb-release.yaml
 - lbconfig.yaml
+- bgpconfig.yaml
