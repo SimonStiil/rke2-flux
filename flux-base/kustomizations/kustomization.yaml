@@ -9,6 +9,7 @@ resources:
 - flux-webhook.yaml
 - reloader.yaml
 - rke-patches.yaml
+- cilium-bgp.yaml
 - rook-ceph.yaml
 - jenkins.yaml
 - test.yaml

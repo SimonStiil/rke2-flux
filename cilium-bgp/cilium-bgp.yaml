@@ -1,9 +1,12 @@
 ---
-apiVersion: cilium.io/v2
+apiVersion: cilium.io/v2alpha1
 kind: CiliumBGPClusterConfig
 metadata:
   name: cilium-bgp
 spec:
+  nodeSelector:
+    matchLabels:
+      kubernetes.io/os: linux
   bgpInstances:
   - name: "instance-65001"
     localASN: 65001
@@ -14,7 +17,15 @@ spec:
       peerConfigRef:
         name: "cilium-peer"
 ---
-apiVersion: cilium.io/v2
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rke2-cilium-auth-secret
+  namespace: kube-system
+stringData:
+  password: ""
+---
+apiVersion: cilium.io/v2alpha1
 kind: CiliumBGPPeerConfig
 metadata:
   name: cilium-peer
@@ -23,6 +34,7 @@ spec:
     holdTimeSeconds: 9
     keepAliveTimeSeconds: 3
   ebgpMultihop: 4
+  authSecretRef: rke2-cilium-auth-secret
   gracefulRestart:
     enabled: true
     restartTimeSeconds: 15
@@ -33,7 +45,7 @@ spec:
         matchLabels:
           advertise: "bgp"
 ---
-apiVersion: cilium.io/v2
+apiVersion: cilium.io/v2alpha1
 kind: CiliumBGPAdvertisement
 metadata:
   name: bgp-advertisements
@@ -49,14 +61,14 @@ spec:
         communities:
           standard: [ "65000:100" ]
         localPreference: 100
-      selector:             # <-- select all services
+      selector:
         matchExpressions:
          - {key: somekey, operator: NotIn, values: ['never-used-value']}
 ---
-apiVersion: "cilium.io/v2"
+apiVersion: "cilium.io/v2alpha1"
 kind: CiliumLoadBalancerIPPool
 metadata:
   name: "bgp-pool"
 spec:
   blocks:
-  - cidr: "192.168.13/24"
+  - cidr: "192.168.13.0/24"
