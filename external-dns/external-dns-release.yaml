@@ -35,7 +35,7 @@ spec:
       name: rfc2136
     extraArgs: 
     - --label-filter=external-dns-export=true
-    - --rfc2136-host=192.168.1.5
+    - --rfc2136-host=192.168.10.15
     - --rfc2136-port=53
     - --rfc2136-zone=${topleveldomain}
     - --rfc2136-zone=${homedomain}
