@@ -3,5 +3,6 @@ kind: Kustomization
 resources:
 - rke2-ingress-nginx.yaml
 - rke2-cilium.yaml
+- cilium-bgp.yaml
 - default-cert.yaml
 - traefik.diskstation.yaml
