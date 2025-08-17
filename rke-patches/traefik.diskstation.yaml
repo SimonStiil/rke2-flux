@@ -38,6 +38,6 @@ metadata:
   namespace: kube-system
 subsets:
   - addresses:
-      - ip: 192.168.1.5
+      - ip: 192.168.10.15
     ports:
       - port: 8443
