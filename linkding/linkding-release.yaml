@@ -51,4 +51,16 @@ spec:
           key: password
     - name: LD_DB_HOST
       value: linkding-postgres-rw
-      
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              labelSelector: "app.kubernetes.io/name=linkding"
+            patch: |-
+              - op: add
+                path: /spec/strategy
+                value: {}
+              - op: add
+                path: /spec/strategy/type
+                value: Recreate
