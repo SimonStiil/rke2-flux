@@ -17,3 +17,5 @@ resources:
 - generic-webhook-k8s-external.yaml
 - generic-webhook-repo-external.yaml
 - cache-pvc.yaml
+- buildkit-certificates.yaml
+- buildkit-daemon.yaml

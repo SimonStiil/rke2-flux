@@ -1,0 +1,43 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: buildkit-daemon-certs
+  namespace: jenkins
+spec:
+  dnsNames:
+  - buildkitd
+  - buildkitd.jenkins
+  - buildkitd.jenkins.svc  
+  duration: 8760h # 1 y
+  renewBefore: 720h # 30 d
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: stiil-issuer
+  secretName: buildkit-daemon-certs
+  usages:
+  - digital signature
+  - key encipherment
+  - client auth
+  - server auth
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: buildkit-client-certs
+  namespace: jenkins
+spec:
+  commonName: client
+  duration: 17520h # 2 y
+  renewBefore: 720h # 30 d
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: stiil-issuer
+  secretName: buildkit-client-certs
+  usages:
+  - digital signature
+  - key encipherment
+  - client auth
+  - server auth
+---
