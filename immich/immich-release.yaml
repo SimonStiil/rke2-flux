@@ -8,7 +8,7 @@ spec:
   interval: 10m
   url: oci://ghcr.io/immich-app/immich-charts/immich
   ref:
-    tag: "0.10.0"
+    tag: "0.10.1"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
