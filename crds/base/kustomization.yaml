@@ -4,5 +4,5 @@ resources:
 - cert-manager.yaml
 # - external-secrets.yaml
 - metallb.yaml
-- rook-crds.yaml
+# - rook-crds.yaml
 - prometheus-operator-crds.yaml

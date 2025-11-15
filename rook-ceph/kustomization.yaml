@@ -1,22 +1,22 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- https://raw.githubusercontent.com/rook/rook/v1.18.7/deploy/examples/common.yaml
-- https://raw.githubusercontent.com/rook/rook/v1.18.7/deploy/examples/csi-operator.yaml
-- operator.yaml
+# - https://raw.githubusercontent.com/rook/rook/v1.18.7/deploy/examples/common.yaml
+# - https://raw.githubusercontent.com/rook/rook/v1.18.7/deploy/examples/csi-operator.yaml
+# - operator.yaml
 - cluster.yaml
 
-- ceph-ingress.yaml
-- replicapools-nvme.yaml
-- object-store.yaml
-- storageclass-nvme.yaml
-- storageclass-buckets.yaml
-- storageclass-rwx.yaml
+# - ceph-ingress.yaml
+# - replicapools-nvme.yaml
+# - object-store.yaml
+# - storageclass-nvme.yaml
+# - storageclass-buckets.yaml
+# - storageclass-rwx.yaml
 
-- service-monitor.yaml
-- csi-metrics-service-monitor.yaml
-- exporter-service-monitor.yaml
+# - service-monitor.yaml
+# - csi-metrics-service-monitor.yaml
+# - exporter-service-monitor.yaml
 
-#- externalrules.yaml
-#- keda-rgw.yaml
-#- localrules.yaml
+# - externalrules.yaml
+# - keda-rgw.yaml
+# - localrules.yaml
