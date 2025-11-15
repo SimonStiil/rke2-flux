@@ -1,0 +1,91 @@
+---
+# https://charts.pascaliske.dev/charts/linkding/
+# https://github.com/sissbruecker/linkding/tree/master
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rook-ceph-cluster
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chart: rook-ceph-cluster
+      version: v1.18.7
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: rook
+  interval: 10m0s
+  targetNamespace: rook-ceph
+  values:
+    clusterName: rook-ceph
+    toolbox:
+      enabled: true
+    monitoring:
+      enabled: true
+    cephClusterSpec:
+      dataDirHostPath: /var/lib/rancher/rook
+      storage: # cluster level storage configuration and selection
+      
+        #useAllNodes: true
+        #useAllDevices: true
+        config:
+          # crushRoot: "custom-root" # specify a non-default root label for the CRUSH map
+          # metadataDevice: "md0" # specify a non-rotational storage so ceph-volume will use it as block db device of bluestore.
+          # databaseSizeMB: "1024" # uncomment if the disks are smaller than 100 GB
+          osdsPerDevice: "1" # this value can be overridden at the node or device level
+          # encryptedDevice: "true" # the default value for this option is "false"
+        # Individual nodes and their config can be specified as well, but 'useAllNodes' above must be set to false. Then, only the named
+        # nodes below will be used as storage resources.  Each node's 'name' field should match their 'kubernetes.io/hostname' label.
+        nodes:
+          - name: "node1"
+            devices: # specific devices to use for storage can be specified for each node
+              - name: "/dev/nvme0n1p2"
+          - name: "node2"
+            devices: # specific devices to use for storage can be specified for each node
+              - name: "/dev/nvme0n1p2"
+          - name: "node3"
+            devices: # specific devices to use for storage can be specified for each node
+              - name: "/dev/nvme0n1p2"
+          - name: "node4"
+            devices: # specific devices to use for storage can be specified for each node
+              - name: "/dev/nvme0n1p2"
+        onlyApplyOSDPlacement: false
+      
+    ingress:
+      # -- Enable an ingress for the ceph-dashboard
+      dashboard:
+        annotations:
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+        host: 
+          name: ceph.${clusterdomain:=undefined}
+          path: /
+          pathType: Prefix
+        ingressClassName: nginx
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: CephBlockPool
+              group: ceph.rook.io
+              version: v1
+              name: ceph-blockpool
+            patch: |-
+              - op: replace
+                path: /spec/replicated/size
+                value: 2
+              - op: add
+                path: /spec/enableRBDStats
+                value: true
+          - target:
+              kind: CephFilesystem
+              group: ceph.rook.io
+              version: v1
+              name: ceph-filesystem
+            patch: |-
+              - op: replace
+                path: /spec/dataPools/0/replicated/size
+                value: 2
+              - op: replace
+                path: /spec/metadataPool/replicated/size
+                value: 2

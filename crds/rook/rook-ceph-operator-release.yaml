@@ -28,3 +28,8 @@ spec:
       nfs:
         # -- Enable the nfs csi driver
         enabled: false
+        
+      serviceMonitor:
+        enabled: true
+    monitoring:
+      enabled: true
