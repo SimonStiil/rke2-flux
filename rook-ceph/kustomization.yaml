@@ -4,7 +4,7 @@ resources:
 # - https://raw.githubusercontent.com/rook/rook/v1.18.7/deploy/examples/common.yaml
 # - https://raw.githubusercontent.com/rook/rook/v1.18.7/deploy/examples/csi-operator.yaml
 # - operator.yaml
-- cluster.yaml
+# - cluster.yaml
 
 # - ceph-ingress.yaml
 # - replicapools-nvme.yaml
