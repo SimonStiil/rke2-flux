@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: agent
-        image: ghcr.io/simonstiil/traefik-out-of-cluster:main
+        image: ghcr.io/simonstiil/traefik-out-of-cluster:child-clusters
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -24,6 +24,22 @@ spec:
           value: ${clusterdomain:=undefined}
         - name: TOOC_DEBUG
           value: "true"
+        - name: TOOC_CHILDREN_0_NAME
+          value: "k3s"
+        - name: TOOC_CHILDREN_0_URL
+          value: "https://tooc-k3s.${homedomain:=undefined}/"
+        - name: TOOC_CHILDREN_0_TIMEOUT
+          value: "15"
+        - name: TOOC_CHILDREN_0_ROOTCAFILE
+          value: "/etc/ssl/certs/ca.crt"
+        volumeMounts:
+        - name: ca-cert
+          mountPath: /etc/ssl/certs
+          readOnly: true
+      volumes:
+      - name: ca-cert
+        secret:
+          secretName: stiil-ca-certificates
       serviceAccountName: ro-ingress-services-routes
 ---
 apiVersion: v1
