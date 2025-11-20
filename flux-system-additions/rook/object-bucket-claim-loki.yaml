@@ -5,7 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   bucketName: ${AWS_BUCKET_NAME}
-  storageClassName: rook-ceph-bucket
+  storageClassName: ceph-bucket
   additionalConfig:
     maxObjects: "100000"
     maxSize: "50G"

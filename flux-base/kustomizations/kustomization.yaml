@@ -7,16 +7,16 @@ resources:
 - cert-manager.yaml
 - csi-driver-nfs.yaml
 - flux-webhook.yaml
-# - reloader.yaml
+- reloader.yaml
 - rke-patches.yaml
 - cilium-bgp.yaml
 - rook-ceph.yaml
 #- jenkins.yaml
 # - test.yaml
 #- vcluster.yaml
-#- cloudnative-pg.yaml
-#- flux-system-additions.yaml
-#- monitoring.yaml
+- cloudnative-pg.yaml
+- flux-system-additions.yaml
+- monitoring.yaml
 - traefik-out-of-cluster.yaml
 - external-dns.yaml
 # - kube-auth-proxy.yaml

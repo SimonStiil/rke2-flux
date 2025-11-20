@@ -44,7 +44,7 @@ spec:
           admin:  ${AWS_BUCKET_NAME} 
         s3:
 #          s3: http://${AWS_ACCESS_KEY_ID}:${AWS_SECRET_ACCESS_KEY}@rook-ceph-rgw-object-store.rook-ceph.svc.cluster.local:8080/
-          endpoint: rook-ceph-rgw-object-store.rook-ceph.svc:8080
+          endpoint: rook-ceph-rgw-ceph-objectstore.rook-ceph.svc:80
           secretAccessKey: ${AWS_SECRET_ACCESS_KEY}
           accessKeyId: ${AWS_ACCESS_KEY_ID}
           s3ForcePathStyle : true
