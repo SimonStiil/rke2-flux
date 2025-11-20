@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: agent
-        image: ghcr.io/simonstiil/traefik-out-of-cluster:child-clusters
+        image: ghcr.io/simonstiil/traefik-out-of-cluster:main
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
