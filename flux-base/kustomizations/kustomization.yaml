@@ -23,3 +23,4 @@ resources:
 # - trivy-operator.yaml
 # - immich.yaml
 # - linkding.yaml
+- authentik.yaml

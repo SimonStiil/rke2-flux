@@ -1,0 +1,46 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: authentik-postgres-user
+  namespace: authentik
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: webhook-backend
+    kind: ClusterSecretStore
+  target:
+    name: authentik-postgres-user
+    template:
+      type: kubernetes.io/basic-auth
+      data:
+        username: "authentik"
+        password: "{{ .password | toString }}"
+  data:
+  - secretKey: password
+    remoteRef:
+      key: authentik-postgres
+      property: turingpi
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: authentik-postgres
+  namespace: authentik
+spec:
+  instances: 1
+  managed:
+    roles:
+      - name: authentik
+        superuser: true
+        login: true
+
+  bootstrap:
+    initdb:
+      database: authentik
+      owner: authentik
+      secret:
+        name: authentik-postgres-user
+
+  storage:
+    size: 1Gi
+    storageClass: ceph-block

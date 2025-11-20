@@ -1,0 +1,46 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: authentik
+  namespace: authentik
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: webhook-backend
+    kind: ClusterSecretStore
+  target:
+    name: authentik-env
+    template:
+      data:
+        AUTHENTIK_POSTGRESQL__HOST: authentik-postgres-rw
+        AUTHENTIK_POSTGRESQL__NAME: authentik
+        AUTHENTIK_POSTGRESQL__PASSWORD: "{{ .postgresPassword | toString }}"
+        AUTHENTIK_POSTGRESQL__USER: authentik
+        AUTHENTIK_SECRET_KEY: "{{ .secretKey | toString }}"
+        AUTHENTIK_EMAIL__HOST: send.one.com
+        AUTHENTIK_EMAIL__PORT: "465"
+        # Optionally authenticate (don't add quotation marks to your password)
+        AUTHENTIK_EMAIL__USERNAME: "{{ .username | toString }}"
+        AUTHENTIK_EMAIL__PASSWORD: "{{ .password | toString }}"
+        # Use StartTLS
+        AUTHENTIK_EMAIL__USE_TLS: "true"
+        # Use SSL
+        AUTHENTIK_EMAIL__USE_SSL: "true"
+        AUTHENTIK_EMAIL__TIMEOUT: "5"
+        # Email address authentik will send from, should have a correct @domain
+        AUTHENTIK_EMAIL__FROM: "Authentik <{{ .username | toString }}>"
+  data:
+  - secretKey: postgresPassword
+    remoteRef:
+      key: authentik-postgres
+      property: turingpi
+  - secretKey: secretKey
+    remoteRef:
+      key: authentik-secret-key
+      property: turingpi
+  - secretKey: username
+    remoteRef:
+      key: robot-email-username
+  - secretKey: password
+    remoteRef:
+      key: robot-email-password

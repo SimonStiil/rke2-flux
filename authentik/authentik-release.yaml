@@ -1,0 +1,49 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: authentik
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chart: authentik
+      version: 2025.10.2
+      reconcileStrategy: ChartVersion
+      sourceRef:
+        kind: HelmRepository
+        name: authentik
+  interval: 1m0s
+  targetNamespace: authentik
+  values:
+    global:
+      envFrom: 
+        - secretRef:
+            name: authentik-env
+        # - configMapRef:
+        #     name: config-map-name
+    authentik:
+      # This sends anonymous usage-data, stack traces on errors and
+      # performance data to sentry.io, and is fully opt-in
+      error_reporting:
+        enabled: false
+
+    server:
+      ingress:
+        ingressClassName: nginx
+        enabled: true
+        hosts:
+          - authentik.${topleveldomain:=undefined}
+        labels:
+          external-dns-export: "true"
+          tooc.k8s.stiil.dk/export: "true"
+          tooc.k8s.stiil.dk/ssl-type: reencrypt
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+    worker:
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
