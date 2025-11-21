@@ -12,7 +12,7 @@ resources:
 - cilium-bgp.yaml
 - rook-ceph.yaml
 #- jenkins.yaml
-# - test.yaml
+- test.yaml
 #- vcluster.yaml
 - cloudnative-pg.yaml
 - flux-system-additions.yaml
