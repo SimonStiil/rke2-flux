@@ -10,7 +10,7 @@ spec:
       replicaCount: 2
       service:
         enabled: true
-        externalTrafficPolicy: Local
+#        externalTrafficPolicy: Local
         annotations:
           lbipam.cilium.io/ips: 192.168.13.1
       publishService:
