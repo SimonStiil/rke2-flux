@@ -63,10 +63,11 @@ metadata:
   labels:
     external-dns-export: "true"
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure,web
+    traefik.ingress.kubernetes.io/router.tls: "true"
     cert-manager.io/cluster-issuer: stiil-issuer
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
   - host: tooc-tpi.${homedomain:=undefined}
     http:

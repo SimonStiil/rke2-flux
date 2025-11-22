@@ -1,0 +1,20 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: elastic-logging
+  namespace: traefik
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: webhook-backend
+    kind: ClusterSecretStore
+  target:
+    name:  elastic-logging
+    template:
+      data:
+        username: elk-tpi-cluster-traefik
+        password: "{{ .password | toString }}"
+  data:
+  - secretKey: password
+    remoteRef:
+      key: elk-tpi-cluster-traefik

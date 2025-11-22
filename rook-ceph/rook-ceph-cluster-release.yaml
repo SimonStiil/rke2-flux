@@ -51,17 +51,6 @@ spec:
             devices: # specific devices to use for storage can be specified for each node
               - name: "/dev/nvme0n1p2"
         onlyApplyOSDPlacement: false
-      
-    ingress:
-      # -- Enable an ingress for the ceph-dashboard
-      dashboard:
-        annotations:
-          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-        host: 
-          name: ceph.${clusterdomain:=undefined}
-          path: /
-          pathType: Prefix
-        ingressClassName: nginx
   postRenderers:
     - kustomize:
         patches:

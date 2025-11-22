@@ -89,6 +89,10 @@ spec:
         type: Recreate
       ingress:
         enabled: true
+        ingressClassName: traefik
+        annotations: 
+          traefik.ingress.kubernetes.io/router.entrypoints: websecure,web
+          traefik.ingress.kubernetes.io/router.tls: "true"
         hosts:
          - grafana.${clusterdomain:=undefined}
       persistence:
@@ -296,6 +300,9 @@ spec:
          - prometheus.tpi.${homedomain:=undefined}
         annotations:
           cert-manager.io/cluster-issuer: stiil-issuer
+          traefik.ingress.kubernetes.io/router.entrypoints: websecure,web
+          traefik.ingress.kubernetes.io/router.tls: "true"
+        ingressClassName: traefik
         tls:
         - secretName: prometheus-cert
           hosts:

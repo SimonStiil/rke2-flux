@@ -89,7 +89,7 @@ spec:
       allocatedMemory: 100
     ingress:
       enabled: true
-      ingressClassName: nginx
+      ingressClassName: traefik
       hosts:
         - loki.tpi.${homedomain:=undefined}
       annotations:

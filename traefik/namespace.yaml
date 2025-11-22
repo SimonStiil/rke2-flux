@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: traefik
+  labels:
+    elastic-eck/ca-elasticsearch: "true"
+    elastic-eck/ca-kibana: "true"
