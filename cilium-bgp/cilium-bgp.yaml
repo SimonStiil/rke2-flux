@@ -34,7 +34,7 @@ spec:
     holdTimeSeconds: 9
     keepAliveTimeSeconds: 3
   ebgpMultihop: 4
-  authSecretRef: rke2-cilium-auth-secret
+#  authSecretRef: rke2-cilium-auth-secret
   gracefulRestart:
     enabled: true
     restartTimeSeconds: 15

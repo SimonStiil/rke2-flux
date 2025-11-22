@@ -1,0 +1,226 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: traefik
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chart: traefik
+      reconcileStrategy: ChartVersion
+      version: 37.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: traefik
+  install:
+    crds: CreateReplace
+    createNamespace: true
+  interval: 10m0s
+  timeout: 2m0s
+  targetNamespace: traefik
+  upgrade:
+    crds: CreateReplace
+  values:
+    logs:
+      general:
+        level: INFO
+#        format: json
+      access:
+        enabled: true
+        filePath: "/accesslogs/access.log"
+#        format: json
+        fields:
+          defaultMode: keep
+          names:
+            ClientUsername: keep
+          headers:
+            defaultMode: keep
+            names:
+              User-Agent: keep
+              Authorization: drop
+              
+    podSecurityContext:
+      fsGroup: 65532
+    entryPoints:
+      metrics:
+        address: :8082
+    metrics:
+      prometheus:
+        entryPoint: metrics
+        addEntryPointsLabels: true
+        addRoutersLabels: true
+        addServicesLabels: true
+    additionalArguments:
+    - --entryPoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32,10.42.0.1,192.168.1.5
+    - --entryPoints.websecure.forwardedHeaders.trustedIPs=127.0.0.1/32,10.42.0.1,192.168.1.5
+#    - --log.filePath=/logs/traefik.log
+    experimental:
+      kubernetesGateway:
+        namespacePolicy: All
+        certificate:
+          group: ""
+          kind: Secret
+          name: traefik-default-certificate
+        enabled: true
+    ports:
+      web:
+        redirections:
+          entryPoint:
+            to: websecure
+            scheme: https
+            permanent: true
+    service:
+      spec:
+        externalTrafficPolicy: Local
+      loadBalancerIP: "192.168.13.1"
+      annotations:
+        lbipam.cilium.io/ips: 192.168.13.1
+    providers:
+      kubernetesCRD:
+        allowExternalNameServices: true
+        allowEmptyServices: true
+        ingressClass: "traefik"
+      kubernetesIngress:
+        publishedService:
+          enabled: true
+        allowExternalNameServices: true
+        allowEmptyServices: true
+        ingressClass: "traefik"
+    ingressClass:
+      name: traefik
+    ingressRoute:
+      dashboard:
+        enabled: true
+        annotations:
+          kubernetes.io/ingress.class: traefik
+        matchRule: "Host(`traefik.${clusterdomain:=undefined}`)"
+        entryPoints:
+        - web
+        - websecure
+        middlewares:
+        - name: append-dashboard
+          namespace: traefik
+      healthcheck:
+        annotations:
+          kubernetes.io/ingress.class: traefik
+    deployment:
+      initContainers:
+      - name: promtail
+        image: docker.io/grafana/promtail:3.5.7
+        imagePullPolicy: IfNotPresent
+        args:
+        - -config.file=/etc/promtail/promtail.yaml
+        restartPolicy: Always
+        ports:
+        - containerPort: 3101
+          name: http-metrics
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /ready
+            port: http-metrics
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        volumeMounts:
+        - name: accesslog
+          mountPath: "/accesslogs"
+        - name: promtail-config
+          mountPath: /etc/promtail/promtail.yaml
+          subPath: promtail.yaml
+        env:
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+      additionalVolumes:
+      - name: accesslog
+        emptyDir: {}
+      - name: promtail-config
+        configMap:
+          name: promtail-config
+    additionalVolumeMounts:
+    - name: accesslog
+      mountPath: "/accesslogs"
+    extraObjects:
+    - apiVersion: traefik.io/v1alpha1
+      kind: Middleware
+      metadata:
+        name: append-dashboard
+        namespace: traefik
+      spec:
+        redirectRegex:
+          regex: "^https:\\/\\/([^\\/]+)\\/?$"
+          replacement: "https://$1/dashboard/"
+    - apiVersion: traefik.io/v1alpha1
+      kind: TLSStore
+      metadata:
+        name: default
+        namespace: traefik
+      spec:
+        defaultCertificate:
+          secretName: traefik-default-certificate
+    - apiVersion: traefik.io/v1alpha1
+      kind: IngressRouteTCP
+      metadata:
+        namespace: default
+        name: kubernetes-api
+        annotations:
+          kubernetes.io/ingress.class: traefik
+      spec:
+        entryPoints:
+          - web
+          - websecure
+        routes:
+        - match: HostSNI(`api.${clusterdomain:=undefined}`)
+          services:
+          - name: kubernetes
+            port: 443
+            weight: 1
+        tls:
+          passthrough: true
+    - apiVersion: traefik.io/v1alpha1
+      kind: IngressRoute
+      metadata:
+        name: diskstation-traefik
+        namespace: traefik
+        annotations:
+          kubernetes.io/ingress.class: traefik
+      spec:
+        entryPoints:
+          - web
+        routes:
+        - match: Host(`traefik.diskstation.${topleveldomain:=undefined}`)
+          kind: Rule
+          services:
+          - kind: Service
+            name: diskstation-traefik
+            scheme: http
+            port: 80
+    - apiVersion: traefik.io/v1alpha1
+      kind: IngressRouteTCP
+      metadata:
+        name: diskstation-traefik-tls
+        namespace: traefik
+        annotations:
+          kubernetes.io/ingress.class: traefik
+      spec:
+        entryPoints:
+          - websecure
+        routes:
+        - match: HostSNI(`traefik.diskstation.${topleveldomain:=undefined}`)
+          services:
+          - name: diskstation-traefik-tls
+            port: 443
+        tls:
+          passthrough: true 

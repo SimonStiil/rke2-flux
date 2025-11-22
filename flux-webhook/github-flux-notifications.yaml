@@ -19,15 +19,17 @@ spec:
     name: github-status
   eventSources:
   - kind: Kustomization
+    name: authentik
+  - kind: Kustomization
     name: cert-manager
+  - kind: Kustomization
+    name: cilium-bgp
   - kind: Kustomization
     name: cloudnative-pg
   - kind: Kustomization
     name: crds-base
   - kind: Kustomization
     name: crds-cert-manager
-  - kind: Kustomization
-    name: crds-external-secrets
   - kind: Kustomization
     name: crds-metallb
   - kind: Kustomization
@@ -47,18 +49,42 @@ spec:
   - kind: Kustomization
     name: flux-webhook
   - kind: Kustomization
-    name: jenkins
-  - kind: Kustomization
-    name: metallb
-  - kind: Kustomization
     name: monitoring
   - kind: Kustomization
     name: reloader
-  - kind: Kustomization
-    name: rke-patches
   - kind: Kustomization
     name: rook-ceph
   - kind: Kustomization
     name: test
   - kind: Kustomization
+    name: traefik
+  - kind: Kustomization
     name: traefik-out-of-cluster
+  - kind: HelmRelease
+    name: authentik
+  - kind: HelmRelease
+    name: cert-manager
+  - kind: HelmRelease
+    name: cnpg
+  - kind: HelmRelease
+    name: csi-driver-nfs
+  - kind: HelmRelease
+    name: external-dns
+  - kind: HelmRelease
+    name: external-secrets
+  - kind: HelmRelease
+    name: kube-prometheus-stack
+  - kind: HelmRelease
+    name: loki
+  - kind: HelmRelease
+    name: prometheus-operator-crds
+  - kind: HelmRelease
+    name: promtail
+  - kind: HelmRelease
+    name: reloader
+  - kind: HelmRelease
+    name: rook-ceph-cluster
+  - kind: HelmRelease
+    name: rook-ceph-opperator
+  - kind: HelmRelease
+    name: traefik

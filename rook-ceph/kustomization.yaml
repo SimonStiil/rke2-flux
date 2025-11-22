@@ -2,12 +2,13 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - rook-ceph-cluster-release.yaml
+- ceph-ingress.yaml
+
 # - https://raw.githubusercontent.com/rook/rook/v1.18.7/deploy/examples/common.yaml
 # - https://raw.githubusercontent.com/rook/rook/v1.18.7/deploy/examples/csi-operator.yaml
 # - operator.yaml
 # - cluster.yaml
 
-# - ceph-ingress.yaml
 # - replicapools-nvme.yaml
 # - object-store.yaml
 # - storageclass-nvme.yaml

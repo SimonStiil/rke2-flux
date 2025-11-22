@@ -30,14 +30,21 @@ spec:
 
     server:
       ingress:
-        ingressClassName: nginx
+        ingressClassName: traefik
         enabled: true
         hosts:
           - authentik.${topleveldomain:=undefined}
         labels:
           external-dns-export: "true"
           tooc.k8s.stiil.dk/export: "true"
-          tooc.k8s.stiil.dk/ssl-type: reencrypt
+          tooc.k8s.stiil.dk/ssl-type: "reencrypt"
+        annotations:
+          traefik.ingress.kubernetes.io/router.tls: "true"
+          traefik.ingress.kubernetes.io/router.entrypoints: "websecure,web"
+#      service:
+#        annotations:
+#          traefik.ingress.kubernetes.io/service.serversscheme: https
+#          traefik.ingress.kubernetes.io/service.serverstransport: teleport-insecure-skip-verify@kubernetescrd
       metrics:
         enabled: true
         serviceMonitor:

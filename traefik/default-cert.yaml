@@ -1,8 +1,8 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: nginx-default-certificate
-  namespace: kube-system
+  name: traefik-default-certificate
+  namespace: traefik
 spec:
   dnsNames:
   - "*.${topleveldomain}"
@@ -13,7 +13,7 @@ spec:
     group: cert-manager.io
     kind: ClusterIssuer
     name: letsencrypt-cloudflare-issuer
-  secretName: nginx-default-certificate
+  secretName: traefik-default-certificate
   usages:
   - digital signature
   - key encipherment

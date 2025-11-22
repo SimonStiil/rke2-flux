@@ -2,7 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - crds.yaml
-# - metallb.yaml
 - external-secrets.yaml
 - cert-manager.yaml
 - csi-driver-nfs.yaml
@@ -11,16 +10,20 @@ resources:
 - rke-patches.yaml
 - cilium-bgp.yaml
 - rook-ceph.yaml
-#- jenkins.yaml
 - test.yaml
-#- vcluster.yaml
 - cloudnative-pg.yaml
 - flux-system-additions.yaml
 - monitoring.yaml
+- traefik.yaml
 - traefik-out-of-cluster.yaml
 - external-dns.yaml
+- authentik.yaml
+
+
+# - metallb.yaml
 # - kube-auth-proxy.yaml
 # - trivy-operator.yaml
 # - immich.yaml
 # - linkding.yaml
-- authentik.yaml
+# - vcluster.yaml
+# - jenkins.yaml

@@ -8,8 +8,10 @@ metadata:
   namespace: monitoring
   annotations:
     cert-manager.io/cluster-issuer: stiil-issuer
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure,web
+    traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
-  ingressClassName: nginx
+  ingressClassName: traefik
   rules:
   - host: prometheus.tpi.${homedomain:=undefined}
     http:

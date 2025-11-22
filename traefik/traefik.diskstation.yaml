@@ -1,0 +1,44 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: diskstation-traefik-tls
+  namespace: traefik
+spec:
+  ports:
+  - protocol: TCP
+    port: 443
+    targetPort: 8443
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: diskstation-traefik-tls
+  namespace: traefik
+subsets:
+  - addresses:
+      - ip: 192.168.10.15
+    ports:
+      - port: 8443
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: diskstation-traefik
+  namespace: traefik
+spec:
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+---
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: diskstation-traefik
+  namespace: traefik
+subsets:
+  - addresses:
+      - ip: 192.168.10.15
+    ports:
+      - port: 8080
