@@ -4,6 +4,7 @@ resources:
 - namespace.yaml
 - grafana-admin-credentials-external.yaml
 - grafana-ldap-credentials-external.yaml
+- grafana-generic-oauth-external.yaml
 - kube-prometheus-stack-release.yaml
 - prometheus-blackbox-exporter-release.yaml
 # - prometheus-ingress.yaml

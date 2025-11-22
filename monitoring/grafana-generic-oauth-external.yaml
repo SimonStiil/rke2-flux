@@ -1,0 +1,25 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: grafana-generic-oauth-env
+  namespace: monitoring
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: webhook-backend
+    kind: ClusterSecretStore
+  target:
+    name: grafana-generic-oauth-env
+    template:
+      data:
+        GF_AUTH_GENERIC_OAUTH_CLIENT_ID: "{{ .clientId | toString }}"
+        GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: "{{ .clientSecret | toString }}"
+  data:
+  - secretKey: clientId
+    remoteRef:
+      key: tpi-grafana-clientid
+      property: authentik
+  - secretKey: clientSecret
+    remoteRef:
+      key: tpi-grafana-client-secret
+      property: authentik

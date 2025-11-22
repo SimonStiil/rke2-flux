@@ -78,13 +78,27 @@ spec:
         userKey: admin-user
         passwordKey: admin-password
       grafana.ini:
-        auth.ldap:
+#        auth.ldap:
+#          enabled: true
+#          allow_sign_up: true
+#          config_file: /etc/grafana/ldap.toml
+#      ldap:
+#        enabled: true
+#        existingSecret: grafana-ldap-credentials
+        server:
+          root_url: https://grafana.${clusterdomain:=undefined}/
+        auth: 
+          signout_redirect_url: https://authentik.${topleveldomain:=undefined}/application/o/tpi_grafana/end-session/
+          oauth_auto_login: true
+        auth.generic_oauth:
           enabled: true
-          allow_sign_up: true
-          config_file: /etc/grafana/ldap.toml
-      ldap:
-        enabled: true
-        existingSecret: grafana-ldap-credentials
+          name: authentik
+          scopes: "openid email profile"
+          auth_url: "https://authentik.${topleveldomain:=undefined}/application/o/authorize/"
+          token_url: "https://authentik.${topleveldomain:=undefined}/application/o/token/"
+          api_url: "https://authentik.${topleveldomain:=undefined}/application/o/userinfo/"
+          role_attribute_path: contains(groups, 'administrators') && 'Admin' || contains(groups, 'developer') && 'Editor' || 'Viewer'
+      envFromSecret: grafana-generic-oauth-env
       deploymentStrategy:
         type: Recreate
       ingress:
