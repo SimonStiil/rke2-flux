@@ -27,7 +27,7 @@ metadata:
   name: authentik-postgres
   namespace: authentik
 spec:
-  instances: 1
+  instances: 2
   managed:
     roles:
       - name: authentik
