@@ -18,6 +18,7 @@ resources:
 - traefik-out-of-cluster.yaml
 - external-dns.yaml
 - authentik.yaml
+- linkwarden.yaml
 
 
 # - metallb.yaml

@@ -172,3 +172,12 @@ spec:
   interval: 1h
   url: https://traefik.github.io/charts
 ---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: meilisearch
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://meilisearch.github.io/meilisearch-kubernetes
+---
