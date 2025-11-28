@@ -19,6 +19,7 @@ resources:
 - external-dns.yaml
 - authentik.yaml
 - linkwarden.yaml
+- searxng.yaml
 
 
 # - metallb.yaml
