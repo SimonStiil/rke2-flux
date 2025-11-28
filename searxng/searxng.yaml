@@ -1,0 +1,178 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: searxng
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: searxng
+  namespace: searxng
+spec:
+  secretStoreRef:
+    name: webhook-backend
+    kind: ClusterSecretStore
+  target:
+    name: searxng
+    creationPolicy: Owner
+    template:
+      data:
+        SEARXNG_BASE_URL: "https://search.${topleveldomain:=undefined}"
+        SEARXNG_SECRET: "{{ .searxngSecret | toString }}"
+        SEARXNG_VALKEY_URL: "valkey://user:{{ .searxngValkeyPassword | toString }}@localhost:6379/0"
+  data:
+  - secretKey: searxngSecret
+    remoteRef:
+      key: searxng-secret
+      property: turingpi
+  - secretKey: searxngValkeyPassword
+    remoteRef:
+      key: searxng-valkey-password
+      property: turingpi
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: valkey
+  namespace: searxng
+spec:
+  secretStoreRef:
+    name: webhook-backend
+    kind: ClusterSecretStore
+  target:
+    name: valkey
+    creationPolicy: Owner
+    template:
+      data:
+        searxng: "{{ .searxngValkeyPassword | toString }}"
+  data:
+  - secretKey: searxngValkeyPassword
+    remoteRef:
+      key: searxng-valkey-password
+      property: turingpi
+---
+# https://docs.searxng.org/admin/installation-searxng.html Environment Variables and config file description
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: searxng
+  namespace: searxng
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: searxng
+  template:
+    metadata:
+      labels:
+        app: searxng
+    spec:
+      containers:
+        - name: searxng
+          image: searxng/searxng:2025.11.28-20de10df4
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: searxng
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          volumeMounts:
+            - name: config
+              mountPath: /etc/searxng
+            - name: cache
+              mountPath: /var/cache/searxng
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: searxng-config
+        - name: cache
+          persistentVolumeClaim:
+            claimName: searxng-cache
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: searxng-config
+  namespace: searxng
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: searxng-cache
+  namespace: searxng
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+# searxng-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: searxng
+  namespace: searxng
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: searxng
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: searxng
+  namespace: searxng
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure,web
+  labels:
+    external-dns-export: "true"
+    tooc.k8s.stiil.dk/export: "true"
+    tooc.k8s.stiil.dk/ssl-type: reencrypt
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: search.${topleveldomain:=undefined}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: searxng
+                port:
+                  name: http
