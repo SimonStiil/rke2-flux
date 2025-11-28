@@ -5,4 +5,5 @@ resources:
 #- internal-cert-issuer.yaml
 - external-secrets-release.yaml
 - clustersecretstore.yaml
+- clustersecretpushstore.yaml
 - stiil-ca-externalcluster.yaml

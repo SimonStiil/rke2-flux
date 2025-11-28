@@ -1,0 +1,20 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: flux-open-webui-name
+  namespace: flux-system
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: webhook-backend
+    kind: ClusterSecretStore
+  target:
+    name: flux-open-webui-name
+    template:
+      data:
+        AWS_BUCKET_NAME: "{{ .bucket | toString }}"
+  data:
+  - secretKey: bucket
+    remoteRef:
+      key: obc-flux-open-webui-name
+      property: turingpi

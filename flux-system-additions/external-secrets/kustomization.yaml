@@ -2,3 +2,4 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
 - flux-loki-bucket-name-external.yaml
+- flux-open-webui-bucket-name-external.yaml

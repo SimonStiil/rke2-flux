@@ -1,0 +1,26 @@
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: flux-open-webui-credentials
+  namespace: ollama
+spec:
+  refreshInterval: "1h"
+  secretStoreRefs:
+    - name: webhook-backend-push
+      kind: ClusterSecretStore
+  selector:
+    secret:
+      name: open-webui
+  data:
+    - conversionStrategy:
+      match:
+        secretKey: AWS_ACCESS_KEY_ID
+        remoteRef:
+          remoteKey: obc-flux-open-webui-key-id
+          property: tpi-push
+    - conversionStrategy:
+      match:
+        secretKey: AWS_SECRET_ACCESS_KEY
+        remoteRef:
+          remoteKey: obc-flux-open-webui-access-key
+          property: tpi-push

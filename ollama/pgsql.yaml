@@ -1,0 +1,55 @@
+---
+# CloudNativePG Cluster
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: ollama-postgres
+  namespace: ollama
+spec:
+  instances: 2
+  
+  bootstrap:
+    initdb:
+      database: ollama
+      owner: ollama
+      secret:
+        name: ollama-postgres-app
+  
+  storage:
+    size: 10Gi
+    storageClass: ceph-block
+  
+  managed:
+    roles:
+      - name: ollama
+        superuser: true
+        login: true
+  
+  postgresql:
+    parameters:
+      max_connections: "100"
+      shared_buffers: "256MB"
+---
+# ExternalSecret for PostgreSQL credentials
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: ollama-postgres-app
+  namespace: ollama
+spec:
+  secretStoreRef:
+    name: webhook-backend
+    kind: ClusterSecretStore
+  target:
+    name: ollama-postgres-app
+    creationPolicy: Owner
+    template:
+      engineVersion: v2
+      data:
+        username: ollama
+        password: "{{ .password }}"
+  data:
+  - secretKey: password
+    remoteRef:
+      key: ollama-postgres-password
+      property: turingpi
