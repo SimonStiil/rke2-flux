@@ -28,3 +28,29 @@ spec:
       port: 8443
       serversTransport: insecure-skip-verify
   tls: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rook-ceph-rgw-ceph-objectstore
+  namespace: rook-ceph
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure,web
+  labels:
+    external-dns-export: "true"
+    tooc.k8s.stiil.dk/export: "true"
+    tooc.k8s.stiil.dk/ssl-type: reencrypt
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: s3.${topleveldomain:=undefined}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: rook-ceph-rgw-ceph-objectstore
+                port:
+                  name: http
