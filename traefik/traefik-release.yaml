@@ -52,8 +52,8 @@ spec:
         addRoutersLabels: true
         addServicesLabels: true
     additionalArguments:
-    - --entryPoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32,10.42.0.1,192.168.1.5
-    - --entryPoints.websecure.forwardedHeaders.trustedIPs=127.0.0.1/32,10.42.0.1,192.168.1.5
+    - --entryPoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32,10.42.0.1,192.168.10.15
+    - --entryPoints.websecure.forwardedHeaders.trustedIPs=127.0.0.1/32,10.42.0.1,192.168.10.15
 #    - --log.filePath=/logs/traefik.log
     experimental:
       kubernetesGateway:
