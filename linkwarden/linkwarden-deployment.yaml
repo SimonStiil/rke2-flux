@@ -79,7 +79,7 @@ spec:
               key: password
         - name: NEXTAUTH_URL
           value: "https://linkwarden.${topleveldomain:=undefined}/api/v1/auth"
-        - name: NEXT_PUBLIC_AUTHENTIK_ENABLED
+        - name: NEXT_PUBLIC_AUTHELIA_ENABLED
           value: "true"
         - name: NEXT_PUBLIC_DISABLE_REGISTRATION
           value: "true"
@@ -90,18 +90,18 @@ spec:
             secretKeyRef:
               name: linkwarden-authentik
               key: authSecret
-        - name: AUTHENTIK_CLIENT_ID
+        - name: AUTHELIA_CLIENT_ID
           valueFrom:
             secretKeyRef:
               name: linkwarden-authentik
               key: clientId
-        - name: AUTHENTIK_CLIENT_SECRET
+        - name: AUTHELIA_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
               name: linkwarden-authentik
               key: clientSecret
-        - name: AUTHENTIK_ISSUER
-          value: "https://authentik.${topleveldomain:=undefined}/application/o/linkwarden/"
+        - name: AUTHELIA_WELLKNOWN_URL
+          value: "https://auth.${topleveldomain:=undefined}/.well-known/openid-configuration
         - name: MEILI_HOST
           value: "http://linkwarden-meilisearch:7700"
         - name: MEILI_MASTER_KEY

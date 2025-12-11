@@ -17,9 +17,9 @@ spec:
   data:
   - secretKey: clientId
     remoteRef:
-      key: tpi-grafana-clientid
+      key: grafana-clientid
       property: authentik
   - secretKey: clientSecret
     remoteRef:
-      key: tpi-grafana-client-secret
+      key: grafana-client-secret
       property: authentik

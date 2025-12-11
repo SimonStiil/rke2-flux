@@ -92,11 +92,21 @@ spec:
           oauth_auto_login: true
         auth.generic_oauth:
           enabled: true
-          name: authentik
-          scopes: "openid email profile"
-          auth_url: "https://authentik.${topleveldomain:=undefined}/application/o/authorize/"
-          token_url: "https://authentik.${topleveldomain:=undefined}/application/o/token/"
-          api_url: "https://authentik.${topleveldomain:=undefined}/application/o/userinfo/"
+          name: Authelia
+          icon: signin
+          scopes: "openid email profile groups"
+          empty_scopes: false
+          use_refresh_token: true
+          auth_url: "https://auth.${topleveldomain:=undefined}/api/oidc/authorization"
+          token_url: "https://auth.${topleveldomain:=undefined}/api/oidc/token"
+          api_url: "https://auth.${topleveldomain:=undefined}/api/oidc/userinfo"
+          login_attribute_path: preferred_username
+          groups_attribute_path: groups
+          name_attribute_path: name
+          allow_sign_up: "true"
+          allow_assign_grafana_admin: "true"
+          auto_login: "true"
+          use_pkce: true
           role_attribute_path: contains(groups, 'administrators') && 'Admin' || contains(groups, 'developer') && 'Editor' || 'Viewer'
       envFromSecret: grafana-generic-oauth-env
       deploymentStrategy:
