@@ -101,7 +101,7 @@ spec:
               name: linkwarden-authentik
               key: clientSecret
         - name: AUTHELIA_WELLKNOWN_URL
-          value: "https://auth.${topleveldomain:=undefined}/.well-known/openid-configuration
+          value: "https://auth.${topleveldomain:=undefined}/.well-known/openid-configuration"
         - name: MEILI_HOST
           value: "http://linkwarden-meilisearch:7700"
         - name: MEILI_MASTER_KEY

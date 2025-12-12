@@ -88,26 +88,22 @@ spec:
         server:
           root_url: https://grafana.${clusterdomain:=undefined}/
         auth: 
-          signout_redirect_url: https://authentik.${topleveldomain:=undefined}/application/o/tpi_grafana/end-session/
           oauth_auto_login: true
+          oauth_allow_insecure_email_lookup: true
         auth.generic_oauth:
           enabled: true
           name: Authelia
-          icon: signin
           scopes: "openid email profile groups"
-          empty_scopes: false
-          use_refresh_token: true
+#          use_refresh_token: true
           auth_url: "https://auth.${topleveldomain:=undefined}/api/oidc/authorization"
           token_url: "https://auth.${topleveldomain:=undefined}/api/oidc/token"
           api_url: "https://auth.${topleveldomain:=undefined}/api/oidc/userinfo"
           login_attribute_path: preferred_username
-          groups_attribute_path: groups
-          name_attribute_path: name
-          allow_sign_up: "true"
-          allow_assign_grafana_admin: "true"
-          auto_login: "true"
+          allow_assign_grafana_admin: true
+          auto_login: true
           use_pkce: true
-          role_attribute_path: contains(groups, 'administrators') && 'Admin' || contains(groups, 'developer') && 'Editor' || 'Viewer'
+          email_attribute_path: email
+          role_attribute_path: "contains(groups[*], 'administrators') && 'Admin' || contains(groups[*], 'developer') && 'Editor' || 'Viewer'"
       envFromSecret: grafana-generic-oauth-env
       deploymentStrategy:
         type: Recreate

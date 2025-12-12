@@ -52,6 +52,19 @@ spec:
       key: searxng-valkey-password
       property: turingpi
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: searxng-settings
+  namespace: searxng
+data:
+  settings.yml: |
+    use_default_settings: true
+    search:
+      formats:
+        - html
+        - json
+---
 # https://docs.searxng.org/admin/installation-searxng.html Environment Variables and config file description
 apiVersion: apps/v1
 kind: Deployment
@@ -87,6 +100,9 @@ spec:
               mountPath: /etc/searxng
             - name: cache
               mountPath: /var/cache/searxng
+            - name: settings
+              mountPath: /etc/searxng/settings.yml
+              subPath: settings.yml
           livenessProbe:
             httpGet:
               path: /healthz
@@ -110,6 +126,9 @@ spec:
         - name: cache
           persistentVolumeClaim:
             claimName: searxng-cache
+        - name: settings
+          configMap:
+            name: searxng-settings
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
