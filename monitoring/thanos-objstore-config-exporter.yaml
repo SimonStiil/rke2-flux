@@ -1,0 +1,36 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: thanos-objstore-config
+  namespace: monitoring
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: webhook-backend
+    kind: ClusterSecretStore
+  target:
+    name: thanos-objstore-config
+    template:
+      data:
+        objstore.yml: |
+          type: S3
+          config:
+            bucket: "{{ .bucket | toString }}"
+            endpoint: http://rook-ceph-rgw-ceph-objectstore.rook-ceph.svc.cluster.local
+            access_key: "{{ .accesskey | toString }}"
+            secret_key: "{{ .keyid | toString }}"
+            insecure: true
+            bucket_lookup_type: path
+  data:
+  - secretKey: bucket
+    remoteRef:
+      key: obc-flux-thanos-name
+      property: turingpi
+  - secretKey: accesskey
+    remoteRef:
+      key: obc-flux-thanos-access-key
+      property: tpi-push
+  - secretKey: keyid
+    remoteRef:
+      key: obc-flux-thanos-key-id
+      property: tpi-push

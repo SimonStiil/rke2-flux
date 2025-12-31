@@ -1,0 +1,26 @@
+apiVersion: external-secrets.io/v1alpha1
+kind: PushSecret
+metadata:
+  name: flux-thanos-bucket-credentials
+  namespace: monitoring
+spec:
+  refreshInterval: "1h"
+  secretStoreRefs:
+    - name: webhook-backend-push
+      kind: ClusterSecretStore
+  selector:
+    secret:
+      name: thanos-bucket
+  data:
+    - conversionStrategy:
+      match:
+        secretKey: AWS_ACCESS_KEY_ID
+        remoteRef:
+          remoteKey: obc-flux-thanos-key-id
+          property: tpi-push
+    - conversionStrategy:
+      match:
+        secretKey: AWS_SECRET_ACCESS_KEY
+        remoteRef:
+          remoteKey: obc-flux-thanos-access-key
+          property: tpi-push

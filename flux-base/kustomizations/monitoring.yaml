@@ -27,4 +27,7 @@ spec:
       - kind: Secret
         name: flux-loki-bucket-name
         optional: false
+      - kind: Secret
+        name: flux-thanos-name
+        optional: false
 ---

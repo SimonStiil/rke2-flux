@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
 - flux-loki-bucket-name-external.yaml
 - flux-open-webui-bucket-name-external.yaml
+- flux-thanos-bucket-name-external.yaml

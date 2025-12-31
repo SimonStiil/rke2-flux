@@ -1,0 +1,20 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: flux-thanos-name
+  namespace: flux-system
+spec:
+  refreshInterval: "1h"
+  secretStoreRef:
+    name: webhook-backend
+    kind: ClusterSecretStore
+  target:
+    name: flux-thanos-name
+    template:
+      data:
+        THANOS_BUCKET_NAME: "{{ .bucket | toString }}"
+  data:
+  - secretKey: bucket
+    remoteRef:
+      key: obc-flux-thanos-name
+      property: turingpi
