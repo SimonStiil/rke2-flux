@@ -17,9 +17,9 @@ resources:
 - traefik.yaml
 - traefik-out-of-cluster.yaml
 - external-dns.yaml
-- authentik.yaml
-- linkwarden.yaml
-- searxng.yaml
+#- authentik.yaml
+#- linkwarden.yaml
+#- searxng.yaml
 - ollama.yaml
 
 
